@@ -172,7 +172,10 @@ if __name__=='__main__':
     if "IGE" in effects:
         IGE = "IGE"
         IEE = "IEE"
-        
+
+    if "IEE" in effects:
+        IEE = "IEE"
+  
     if "DGE" in effects:
         DGE = "DGE"
         
@@ -258,7 +261,7 @@ if __name__=='__main__':
         # TODO: have to check the one below
         #pvalues_file_dir = "".join([out_dir,"/pvalues_LOCO/",model,"variate/",genotypes_version,"/",phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, cageEffect, maternalEffect])),'/',trait1,'/'])
     elif model == "uni": # TODO: insert some 
-        pvalues_file_dir = "".join([out_dir,"/pvalues_LOCO/",model,"variate/",genotypes_version,"/",phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, cageEffect, maternalEffect])),'/'])
+        pvalues_file_dir = "".join([out_dir,"/pvalues_LOCO/",model,"variate/",genotypes_version,"/",phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, IEE, cageEffect, maternalEffect])),'/'])
         #pvalues_file_dir = "".join(['/users/abaud/abaud/P50_HSrats/output/pvalues_LOCO_unpruned/',task,"/",kinship_type,"_","_".join(filter(None, [subset, DGE, IGE, IEE, cageEffect,maternalEffect]))])
     if not os.path.exists(pvalues_file_dir):
         os.makedirs(pvalues_file_dir, exist_ok=True)
@@ -276,7 +279,7 @@ if __name__=='__main__':
     #pvalues_file = h5py.File(pvalues_file_name,'w')
     
     #e.g. covar_mainDir = "test/null_covars_LOCO/"
-    covar_dir = "".join([covar_mainDir,"/",model,"variate/",phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, cageEffect, maternalEffect])),'/',trait1])
+    covar_dir = "".join([covar_mainDir,"/",model,"variate/",phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, IEE, cageEffect, maternalEffect])),'/',trait1])
     if not os.path.exists(pvalues_file_dir):
         sys.exit("cannot find covar dir " + covar_dir)
     

@@ -6,7 +6,7 @@
 
 sourcedir ="functions/"
 # Get function to prepare results, colest and colste --> change them there if change them in exp_bivar
-source(file=file.path(sourcedir, "prepare_res_update.R"))
+source(file=file.path(sourcedir, "prepare_res.R"))
 
 suppressMessages(library("optparse"))
 

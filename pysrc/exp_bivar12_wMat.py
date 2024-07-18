@@ -134,6 +134,9 @@ if __name__=='__main__':
     if "IGE" in effects:
         IGE = "IGE"
         IEE = "IEE"
+
+    if "IEE" in effects:
+        IEE = "IEE"
         
     if "DGE" in effects:
         DGE = "DGE"
@@ -199,6 +202,9 @@ if __name__=='__main__':
                 chrs.extend(range(start, end+1))
             else:
                 chrs.append(int(item))
+        trait_chrom = chrs[0] # this is a hack needed only to retreive the trait, doesn't really matter the number
+    else:
+        trait_chrom=None # that is None if in VD
     
     ### SETTING SEED TO MAKE IT RANDOM AND REPRODUCIBLE ###
     ### TODO: set "sid = None" if don't want to use the seed, it requires to comment two lines below with 'sid = sid+1'
@@ -219,7 +225,7 @@ if __name__=='__main__':
     # Order in SocialData (self, in_file=None, phenos_version = None,covs_version=None, cage_version=None, dam_version = None, GRM_version = None, subset = None, chrom = None)
     
     #pdb.set_trace()
-    data = SocialData(in_file, phenos_version, covs_version, cage_version, dam_version, GRM_version, subset) 
+    data = SocialData(in_file, phenos_version, covs_version, cage_version, dam_version, GRM_version, subset, chrom=trait_chrom)
     
     traits = data.get_trait(selected_pheno, selected_pheno_MT)
     trait1 = traits['trait']
@@ -238,10 +244,10 @@ if __name__=='__main__':
         
     # this is common to VD and null_covars_LOCO
     if model == "bi":
-        outfile_dir = "".join([out_dir,"/",analysis_type,"/",model,'variate/',phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, cageEffect, maternalEffect])),'/',trait1,'/'])
+        outfile_dir = "".join([out_dir,"/",analysis_type,"/",model,'variate/',phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, IEE, cageEffect, maternalEffect])),'/',trait1,'/'])
         #VD_outfile_dir = "".join([out_dir,"/",model,'variate/',phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, cageEffect, maternalEffect])),'/',trait1,'/'])
     elif model == "uni":
-        outfile_dir = "".join([out_dir,"/",analysis_type,"/",model,'variate/',phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, cageEffect, maternalEffect])),'/'])
+        outfile_dir = "".join([out_dir,"/",analysis_type,"/",model,'variate/',phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, IEE, cageEffect, maternalEffect])),'/'])
         #VD_outfile_dir = "".join([out_dir,"/",model,'variate/',phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, cageEffect, maternalEffect])),'/'])
     
     # adding a subdir in 'null_covars_LOCO'
@@ -535,7 +541,7 @@ if __name__=='__main__':
         #chrs = list(range(1,21)) # this has been implemented as an argument
         #chrs.extend([23,26]) # chromosomes X and mito
         for chrom in  chrs:
-            print('chromosome is ' + str(chrom))
+            print('chromosome is ' + str(chrom) + '; with seed = ', str(sid))
             #pdb.set_trace()
             
             ### 1a. Get data from 'data' ###
@@ -561,8 +567,7 @@ if __name__=='__main__':
             
             ### 2. Get covariance matrix ###
             try_nb_VD = 1
-            #while try_nb_VD < 6:
-            if 0:
+            while try_nb_VD < 6:
                 print('null_covars_LOCO covar')
 
                 vc = DirIndirVD(pheno = doto['pheno'], pheno_ID = doto['pheno_ID'], covs = doto['covs'], covs_ID = doto['covs_ID'], covariates_names = doto['covariates_names'], kinship_all = doto['kinship_full'], kinship_all_ID = doto['kinship_full_ID'],  cage_all = doto['cage_full'], cage_all_ID = doto['cage_full_ID'], maternal_all = doto['maternal_full'], maternal_all_ID = doto['maternal_full_ID'], subset_IDs = doto['subset_IDs'], 
@@ -586,8 +591,8 @@ if __name__=='__main__':
               
             ### 3. Save output ###
             # will save Infos whether optimization successful (after 5 tries) or not
+            toSaveInfos = vc.getToSaveInfos() # try to get info before opening the file in order to not create the file even if it fails
             toSave_file = h5py.File(covar_outfile_name,'w')
-            toSaveInfos = vc.getToSaveInfos()
             toSave_file.create_dataset(name = 'sampleID',data = toSaveInfos['sampleID'])
             toSave_file.create_dataset(name = 'pheno',data = toSaveInfos['pheno'])
             toSave_file.create_dataset(name = 'covs',data = toSaveInfos['covs'])
@@ -601,6 +606,7 @@ if __name__=='__main__':
             
             toSave_file.close()
             gc.collect()
+            sid = sid+10 # increasing the seed of 10 so that it is different and random for each chromosome
 
 
 print("My program took", time.time() - start_time, "to run")

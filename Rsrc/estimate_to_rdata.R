@@ -21,11 +21,6 @@ option_list = list(make_option("--est", action="store", default=NA, type='charac
 
 opt = parse_args(OptionParser(option_list=option_list))
 
-#opt = list(est = "~/PRJs/outputs/test_maternal/output_HT/VD/bivariate/simulations/Andres_kinship_DGE/pheno5_uni/pheno5_uni_pheno6_uni_corr_Ad1d2_zero_est.txt", 
-#           ste = "~/PRJs/outputs/test_maternal/output_HT/VD/bivariate/simulations/Andres_kinship_DGE/pheno5_uni/pheno5_uni_pheno6_uni_corr_Ad1d2_zero_STE.txt", 
-#           out = "test.Rdata", 
-#           corr0 = "corr_Ad1d2")
-
 est_file = opt$est
 ste_file = opt$ste
 outRdata = opt$out

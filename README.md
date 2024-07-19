@@ -4,12 +4,12 @@ code for single- and multi-trait genetic analysis (variance decomposition and GW
 
 ## in pysrc/<br>
 1. `exp_bivar12_wMat.py` to run variance decomposition analysis or null covariance matrix for LOCO GWAS<br>
-needs `classes/`
+needs `classes/`<br>
 	
-  + SigmaRhoCov.py
-  + dirIndirCov\_v2.py
-  + dirIndirVD\_noMT\_wMat.py
-  + social\_data\_wMat.py
+    + SigmaRhoCov.py
+    + dirIndirCov\_v2.py
+    + dirIndirVD\_noMT\_wMat.py
+    + social\_data\_wMat.py
 
 2. `map_LOCO_noMT.py` to run LOCO GWAS (in development)<br>
 

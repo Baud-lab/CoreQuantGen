@@ -591,11 +591,29 @@ class DirIndirVD():
         #2. DEFINE CAGEMATE ASSIGNMENT FOR ANALYSES INVOLVING IGE AND/OR IEE. 
         # Z is N focal x N_all and has 0s in cells Z_i,i (i.e. an animal is not its own cage mate)
         if IEE:
-            #transform boolean to float. shape of same_cage is len(self.cage) x len(self.cage_all)
-            #same_cage and diff_inds are (N_a, N_a) and Z is (N, N_a) and no necessary relationship between the two axes. Still Zi_i (wherever that is) should be 0 and Zi_j should be 1 if i and j are in the same cage
+            
+            ############ SCRAMBLING - uncomment that section
+            #print('scrambling')
+            #print(self.cage_all)
+            #pdb.set_trace()
+            #cage_all_copy = self.cage_all.copy()
+            #np.random.seed(seed)
+            #scrambled_cage_all = np.random.choice(cage_all_copy, size=len(cage_all_copy), replace=False) #its names will be self.sampleID_all
+            #print(scrambled_cage_all)
+            #idxs = np.array([np.where(self.sampleID_all==self.pheno_ID[i])[0][0] for i in range(self.pheno_ID.shape[0])]) 
+            #scrambled_cage=scrambled_cage_all[idxs]
+            #same_cage = 1. * (scrambled_cage[:,np.newaxis]==scrambled_cage_all) # self.cage.shape = (N, 1); self.cage_all.shape = (N,); same_cage.shape = (N,N)
+            #diff_inds = 1. * (self.pheno_ID[:,np.newaxis]!=self.sampleID_all) # self.pheno_ID.shape = (N,); self.sampleID_all.shape = (N,); diff_inds.shape = (N, N)
+            #Z = same_cage * diff_inds 
+            ############ END OF SCRAMBLING
+ 
+            #if scrambling, comment out the 3 lines below
+            #     #transform boolean to float. shape of same_cage is len(self.cage) x len(self.cage_all)
+            #     #same_cage and diff_inds are (N_a, N_a) and Z is (N, N_a) and no necessary relationship between the two axes. Still Zi_i (wherever that is) should be 0 and Zi_j should be 1 if i and j are in the same cage
             same_cage = 1. * (self.cage==self.cage_all) # self.cage.shape = (N, 1); self.cage_all.shape = (N,); same_cage.shape = (N,N)
             diff_inds = 1. * (self.pheno_ID[:,np.newaxis]!=self.sampleID_all) # self.pheno_ID.shape = (N,); self.sampleID_all.shape = (N,); diff_inds.shape = (N, N)
-            Z = same_cage * diff_inds 
+            Z = same_cage * diff_inds
+            
             # To check if Z corresponds to (cage_density - 1): cage_density_minus1 = sum(Z); all( (self.cage_density[:int(self.cage_density.shape[0]/2),0] - cage_density_minus1) == 1)
             # in case pheno_ID have different order than sample_ID:  all( (np.sort(self.cage_density[:int(self.cage_density.shape[0]/2),0]) - np.sort(cage_density_minus1)) == 1) 
             #pdb.set_trace() # check before filtering with Iok

@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Tonnele"
+  given-names: "Helene"
+  orcid: "https://orcid.org/0000-0001-6015-0471"
+- family-names: "Casale"
+  given-names: "Francesco Paolo"
+- family-names: "Baud"
+  given-names: "Amelie"
+  orcid: "https://orcid.org/my-orcid?orcid=0000-0003-2448-0283"
+title: "Baud-lab/CoreQuantGen"
+version: 1.0.0
+doi: 10.5281/zenodo.4965824
+date-released: 2025-10-27
+url: "https://github.com/Baud-lab/CoreQuantGen"

@@ -1,0 +1,25 @@
+###### INPUT/OUTPUT FILES
+original_H5:      "./input/dataset/HSmice_wPleth_noEpoch_HT_v2.h5"
+original_params:  "./input/start_params_set0.csv" 
+output_folder:    "./output/simHSmice/" 
+pipeline_info:    "./output/simHSmice/pipeline_info/"
+
+###### PARAMS FOR SIMULATIONS
+SIT:      "0" 
+POP:      "HSmice"
+P:        "DG2_IG1"
+V:        ["0.1"] 
+SEED:     [30] 
+simMODEL: "bi"
+NPHENO:   2000 
+NCAGES:   549 
+NAs:      0 
+GRMV:     "Andres_kinship"
+CAGEV:    "all" 
+DAMV:     "None"
+
+###### PARAMS for analysis
+vdMODEL:  "bi" 
+PHENOV:   "mockphenos"
+COVSV:    "None"
+EFFECTS:  "DGE,IGE,cageEffect"

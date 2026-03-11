@@ -1,0 +1,28 @@
+###### INPUT/OUTPUT FILES
+original_H5:      "./input/dataset/CFWmice_HT.h5"
+original_params:  "./input/vc/start_params_setHLPHMP.csv" 
+output_folder:    "./output/simCFW/" 
+pipeline_info:    "./output/simCFW/pipeline_info/"
+
+###### PARAMS FOR SIMULATIONS
+SIT:      "HLPHMP" # corresponding to pairphenos Haem.Large_PLT,Haem.MPV
+POP:      "CFW"
+P:        "DG1_IG2"
+V:        ["0.0"] 
+SEED:     [17,18,19,20,21,22,23,24,25,26] 
+simMODEL: "bi"
+NPHENO:   2000 
+NCAGES:   623 
+SUBV:     "include" # this if realdata has some subset and want to simulate from it, put "None" for no subset
+NAs:      "Haem.Large_PLT,Haem.MPV" 
+ORPHENOV: "noBatch" # this goes with NAs from real phenos
+GRMV:     "pruned_dosages"
+CAGEV:    "all623" 
+DAMV:     "None"
+
+###### PARAMS for analysis
+vdMODEL:    "bi" 
+PHENOV:     "mockphenos" 
+COVSV:      "None" 
+EFFECTS:    "DGE,IGE,cageEffect" 
+CORR_NULL:  "corr_Ad1s2,0" # should correspond to param.P - put "None" if only alt model

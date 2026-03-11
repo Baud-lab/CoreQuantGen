@@ -1,0 +1,32 @@
+###### INPUT/OUTPUT FILES
+original_H5:      "./input/dataset/CFWmice_HT.h5"     # path to original data h5 file 
+original_params:  "./input/vc/start_params_setSxHEp.csv" # path to starting parameter file
+output_folder:    "./output/simCFW/"                  # path to main output folder, e.g. ./simHSmice/
+pipeline_info:    "./output/simCFW/pipeline_info/"    # path to folder to store pipeline info, trace, timeline... htmls
+
+###### PARAMS FOR SIMULATIONS
+SIT:      "SxHEp"   # corresponding to name of the set of simulations
+POP:      "CFW"     # name of population, need for simulation output file
+P:        "IG1_IG2" # param to change, can chose among these ones: 
+                    #     ['DGE1', 'DGE2', 'IGE1', 'IGE2', 'DG1_DG2', 'DG1_IG1', 'DG2_IG1', 'DG1_IG2', 'DG2_IG2', 'IG1_IG2', 
+                    #      'DEE1', 'DEE2', 'IEE1', 'IEE2', 'DE1_DE2', 'DE1_IE1', 'DE2_IE1', 'DE1_IE2', 'DE2_IE2', 'IE1_IE2', 
+                    #      'CE1', 'CE2', 'CE1_CE2', 'ME1', 'ME2', 'ME1_ME2']
+V:        ["1.0"]   # value to set P; if negative define as "neg<value>", can be more than one e.g. ["0.0", "0.1", "neg0.1"] 
+SEED:     [40]      # seed used in simulations, can be any number, can be more than one e.g. [14,15] is going to run two sets of simulations
+simMODEL: "sex"     # model to simulate, "uni", "bi", "sex"
+NPHENO:   1000      # number of phenotypes to simulate (1/2 pairs)
+NCAGES:   604       # n cages to subset, if any, leave empty if not
+SUBV:     "include" # name of subset version, in case want to simulate from a specific subset  
+NAs:      0         # n NA to introduce OR name of real phenotypes from which introduce NA, put 0 if none
+ORPHENOV: "None"    # this goes with NAs from real phenos, leave empty if not
+GRMV:     "pruned_dosages"  # grm version from real data 
+CAGEV:    "all623"          # cage version from real data (in R do h5ls(original_H5) to find out)
+DAMV:     "None"            # dam version from real data 
+SEXV:     "all"             # sex version from real data 
+
+###### PARAMS for analysis
+vdMODEL:   "sex"                # model for analysis
+PHENOV:    "mockphenos"         # name of phenotype, will be "mockphenos" unless changed in simulation's script
+COVSV:     "None"               # none unless simulate them
+EFFECTS:   "DGE,IGE,cageEffect" # effects to include in analysis can be any of DGE,IGE,IEE,cageEffect,maternalEffect (NB: IEE is included by default if IGE)
+CORR_NULL: "corr_As1s2,1"       # correlation to constrain comma-sep with the value to constrain, can be 0 or 1 - e.g. "corr_Ad1s2,0" or "corr_As1s2,1"

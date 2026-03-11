@@ -1,0 +1,26 @@
+###### INPUT/OUTPUT FILES
+original_H5:      "./input/dataset/CFWmice_HT.h5"
+original_params:  "./input/vc/start_params_set0.csv" 
+output_folder:    "./output/simCFW/" 
+pipeline_info:    "./output/simCFW/pipeline_info/"
+
+###### PARAMS FOR SIMULATIONS
+SIT:      "0" 
+POP:      "CFW"
+P:        "IG1_IG2"
+V:        ["0.35"] 
+SEED:     [30] 
+simMODEL: "sex"
+NPHENO:   1000 
+NCAGES:   623 
+NAs:      0 
+GRMV:     "pruned_dosages"
+CAGEV:    "all623" 
+DAMV:     "None"
+SEXV:     "all"
+
+###### PARAMS for analysis
+vdMODEL:  "sex" 
+PHENOV:   "mockphenos" 
+COVSV:    "None" 
+EFFECTS:  "DGE,IGE,cageEffect"

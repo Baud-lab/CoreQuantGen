@@ -1,0 +1,23 @@
+##### input files 
+input:      "/users/abaud/htonnele/PRJs/HSmice/output/dataset/HSmice_wPleth_noEpoch_HT_v2.h5" 
+combinDir:  ""  # not used in univariate or sexvariate
+phenos:     118 # Total number of phenotypes to analyse # TODO: should do this so that input can be a list of numbers (i.e. rows) or of phenotypes
+##### output folder
+outdir:         "./output/HSmice"                 # this is where results are published
+pipeline_info:  "./output/HSmice/pipeline_info/"  # this is where to store pipeline info
+
+###### PARAMS for analysis
+vdMODEL:    "uni" 
+PHENOV:     "data_bcNcovariates"
+COVSV:      "data_bcNcovariates" 
+CAGEV:      "all"
+DAMV:       "None" 
+GRMV:       "Andres_kinship"
+SUBSET:     "None" 
+EFFECTS:    "DGE,IGE,cageEffect"  # full model
+CORR_NULL:  "None"
+
+###### PARAMS for collecting files 
+SWAPtraits: "FALSE" # true when want to swap T1 and T2
+
+# NB: to reproduce exact results from paper need to hard set the seed=500 in covRunner.py

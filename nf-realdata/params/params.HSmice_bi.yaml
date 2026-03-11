@@ -1,0 +1,24 @@
+##### input files 
+input:      "/users/abaud/htonnele/PRJs/HSmice/output/dataset/HSmice_wPleth_noEpoch_HT_v2.h5" 
+combinDir:  "/users/abaud/htonnele/PRJs/HSmice/output/dataset/combins/traitDGE_traitIGE/"       # for model without maternal effect
+#combinDir:  "/users/abaud/htonnele/PRJs/HSmice/output/dataset/combins/traitDGE_traitIGE_wtME/"  # for model with maternal effect
+phenos:     ""      # regex selecting combins files for phenotype IGE to analyse, leave empty for all
+##### output folder
+outdir:         "./output/HSmice"                 # this is where results are published
+pipeline_info:  "./output/HSmice/pipeline_info/"  # this is where to store pipeline info
+
+###### PARAMS for analysis
+vdMODEL:    "bi" 
+PHENOV:     "data_bcNcovariates"
+COVSV:      "data_bcNcovariates" 
+CAGEV:      "all"
+DAMV:       "mother_name"
+GRMV:       "Andres_kinship"
+SUBSET:     "None" 
+EFFECTS:    "DGE,IGE,cageEffect"                  # model without maternal effect
+#EFFECTS:    "DGE,IGE,cageEffect,maternalEffect"  # model with maternal effect
+CORR_NULL:  "corr_Ad1s2,0" # tested correlation with null value, can be 0 or 1; to test corr of interest of the paper, need to set corr_Ad1s2
+
+###### PARAMS for collecting files 
+SWAPtraits: "TRUE" # true when want to swap T1 and T2
+

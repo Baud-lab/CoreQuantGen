@@ -1,0 +1,28 @@
+###### INPUT/OUTPUT FILES
+original_H5:      "./input/dataset/CFWmice_HT.h5"
+original_params:  "./input/vc/start_params_setBAPBCr.csv" 
+output_folder:    "./output/simCFW/" 
+pipeline_info:    "./output/simCFW/pipeline_info/"
+
+###### PARAMS FOR SIMULATIONS
+SIT:      "BAPBCr" # corresponding to pairphenos Bioch.ALP_BWcorr,Bioch.CreatinineEnzymatic_BWcorr
+POP:      "CFW"
+P:        "DG1_IG2"
+V:        ["0.0"] 
+SEED:     [15,16] 
+simMODEL: "bi"
+NPHENO:   1000 
+NCAGES:   623 
+SUBV:     "include" # this if realdata has some subset and want to simulate from it, put "None" for no subset
+NAs:      "Bioch.ALP_BWcorr,Bioch.CreatinineEnzymatic_BWcorr" 
+ORPHENOV: "noBatch" # this goes with NAs from real phenos
+GRMV:     "pruned_dosages"
+CAGEV:    "all623" 
+DAMV:     "None"
+
+###### PARAMS for analysis
+vdMODEL:    "bi" 
+PHENOV:     "mockphenos" 
+COVSV:      "None" 
+EFFECTS:    "DGE,IGE,cageEffect" 
+CORR_NULL:  "corr_Ad1s2,0" # should correspond to param.P - put "None" if only alt model

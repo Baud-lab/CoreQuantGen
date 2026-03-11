@@ -1,0 +1,21 @@
+##### input files 
+input:      "/users/abaud/htonnele/PRJs/CFW/output/dataset/CFWmice_HT.h5" # make sure it is readable for Amelie
+combinDir:  "/users/abaud/htonnele/PRJs/CFW/output/dataset/combins/traitDGE_traitIGE/" 
+phenos:     ""  # regex selecting combins files for phenotype IGE to analyse, leave empty for all
+##### output folder 
+outdir:         "./output/CFW"                 # this is where results are published
+pipeline_info:  "./output/CFW/pipeline_info/"  # this is where to store pipeline info
+
+###### PARAMS for analysis
+vdMODEL:    "bi" 
+PHENOV:     "noBatch"
+COVSV:      "noBatch" 
+CAGEV:      "all623"
+DAMV:       "None"
+GRMV:       "pruned_dosages"
+SUBSET:     "include" 
+EFFECTS:    "DGE,IGE,cageEffect" 
+CORR_NULL:  "corr_Ad1s2,0"
+
+###### PARAMS for collecting files 
+SWAPtraits: "TRUE" # true when want to swap T1 and T2

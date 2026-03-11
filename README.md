@@ -11,4 +11,6 @@ code for single- and multi-trait genetic analysis (variance decomposition and GW
 Nextflow pipeline to run variance decomposition analysis
 
 ## in nf-simulations/<br>
-Nextflow pipeline to run simlulations and then variance decomposition analysis
+Nextflow pipeline to run simlulations and then variance decomposition analysis<br>
+
+!NB: Figures related to analysis of CFW and HS mice can be found [here](https://github.com/Baud-lab/CFW_HS_mice)

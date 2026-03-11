@@ -2,18 +2,13 @@
 # Core Quantitative Genetic
 code for single- and multi-trait genetic analysis (variance decomposition and GWAS) with DGE and IGE<br>
 
-## in pysrc/<br>
-1. `exp_bivar12_wMat.py` to run variance decomposition analysis or null covariance matrix for LOCO GWAS<br>
-needs `classes/`<br>
-	
-    + SigmaRhoCov.py
-    + dirIndirCov\_v2.py
-    + dirIndirVD\_noMT\_wMat.py
-    + social\_data\_wMat.py
+## in code/<br>
+1. `VD/` scripts to run variance decomposition analysis or null covariance matrix for LOCO GWAS<br>
+2. `afterVD/` scripts to parse output of VD - and save results as R object<br>
+3. `preVD/` scripts to prepare simulations to analyse with VD <br>
 
-2. `map_LOCO_noMT.py` to run LOCO GWAS (in development)<br>
+## in nf-realdata/<br>
+Nextflow pipeline to run variance decomposition analysis
 
-## in Rsrc/<br>
-1. `estimate_to_rdata.R` to parse etimates and STE files after variance decomposition with exp_bivar<br>
-needs `functions/prepare_res.R`
-
+## in nf-simulations/<br>
+Nextflow pipeline to run simlulations and then variance decomposition analysis

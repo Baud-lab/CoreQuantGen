@@ -15,7 +15,7 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
   - `['col_header']['phenotype_ID']`;
   - `['col_header']['covariatesUsed']`; per each phenotype, the comma-sep string of covariates used - names corresponding to `covariate_ID` in `covariates/` (e.g. "sex,age,Batch", "sex,Batch"...)
   - `['row_header']['sample_ID']`
-  
+<br/> 
 
 ### 2. **`covariates/`**
 2.1. subgroup: *`<cov_subgroup>/`* (e.g. "data_bcNcovariates") <br/>
@@ -28,7 +28,7 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
   - `['matrix']`;
   - `['col_header']['covariate_ID']`; e.g. "sex", "age", "Batch"
   - `['row_header']['sample_ID']`
-
+<br/> 
 
 ### 3. **`cages/`**
 3.1. subgroup: *`<cage_subgroup>/`* (e.g. "all") <br/>

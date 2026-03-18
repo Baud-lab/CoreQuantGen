@@ -1,8 +1,8 @@
-## How to write .h5 input to run covRunner.py
+# How to write .h5 input to run covRunner.py
 
 Will have different H5I_GROUPS (which names need to match the following ones): <br/>
 
-##### 1. **`phenotypes/`**
+### 1. **`phenotypes/`**
 
 1.1. subgroup: *`<pheno_subgroup>/`* (e.g. "data_bcNcovariates") <br/>
   
@@ -16,9 +16,8 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
   - `['col_header']['covariatesUsed']`; per each phenotype, the comma-sep string of covariates used - names corresponding to `covariate_ID` in `covariates/` (e.g. "sex,age,Batch", "sex,Batch"...)
   - `['row_header']['sample_ID']`
   
-<br/>
 
-##### 2. **`covariates/`**
+### 2. **`covariates/`**
 2.1. subgroup: *`<cov_subgroup>/`* (e.g. "data_bcNcovariates") <br/>
   
   - \<cov_subgroup\> corresponds to 'covs_version' <br/> (similar to pheno_subgroup)
@@ -30,9 +29,8 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
   - `['col_header']['covariate_ID']`; e.g. "sex", "age", "Batch"
   - `['row_header']['sample_ID']`
 
-<br/>
 
-##### 3. **`cages/`**
+### 3. **`cages/`**
 3.1. subgroup: *`<cage_subgroup>/`* (e.g. "all") <br/>
   
   - \<cage_subgroup\> corresponds to 'cage_version' <br/> (for different batches or analysis)
@@ -43,9 +41,8 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
   - `['array']`; 
   - `['sample_ID']`
 
-<br/>
 
-##### 4. **`dam/`**
+### 4. **`dam/`**
 4.1. subgroup: *`<dam_subgroup>/`* (e.g. "mother_name") <br/>
   
   - \<dam_subgroup\> corresponds to 'dam_version' <br/> (for different batches or analysis)
@@ -56,9 +53,8 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
   - `['array']`; 
   - `['sample_ID']`
 
-<br/>
 
-##### 5. **`GRM/`** or **`GRM_LOCO/`**
+### 5. **`GRM/`** or **`GRM_LOCO/`**
 5.1. subgroup: *`<GRM_subgroup>/`* (e.g. "Andres_kinship") <br/>
   
   - \<GRM_subgroup\> corresponds to 'GRM_version' <br/>
@@ -69,9 +65,8 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
   - `['matrix']`; 
   - `['row_header']['sample_ID']`
 
-<br/>
 
-##### 6. **`sex_cov/`**
+### 6. **`sex_cov/`**
 6.1. subgroup: *`<sex_subgroup>/`* (e.g. "all") <br/>
   
   - \<sex_subgroup\> corresponds to 'sex_version'
@@ -82,10 +77,8 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
   - `['array']`; 
   - `['sample_ID']`
 
-<br/>
 
-
-##### 7. **`subsets/`** <br/>
+### 7. **`subsets/`** <br/>
 7.1. *`<subset_name>`* (e.g. "include") <br/>
 
   - \<subset_name\> is the name of a specific subset, to handle optional subset of individuals, e.g. excluding singletons
@@ -97,11 +90,9 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
 
 <br/><br/>
 
+## Examples
 
-
-#### Examples
-
-##### A. input.h5 
+### A. input.h5 
 In R can look at it using, `h5ls("input.h5")`. NB: in this example there is no group "subsets"
 ```
                                        group               name       otype
@@ -143,9 +134,9 @@ In R can look at it using, `h5ls("input.h5")`. NB: in this example there is no g
 35                                  /subsets            include H5I_DATASET
 36                                  /subsets              males H5I_DATASET
 ```
-<br/>
 
-##### B. Example of running the code
+
+### B. Example of running the code
 
 Modelling univariate DGE+IEE+cageEffect (i.e. no IGE but include IEE)
 ```

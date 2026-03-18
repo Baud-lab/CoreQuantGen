@@ -1,0 +1,188 @@
+
+
+```{r setup, include=FALSE, class.source = ".rCode"}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(eval = FALSE)
+knitr::opts_chunk$set(comment = list(bash = "")) # this is to avoid printing bash output with # in front
+# If want to do the same for R, can add comment = NA in the chunk part
+library(knitr)
+```
+```{css, echo=FALSE, eval =T}
+pre.python {
+background-color: mintcream;
+}
+pre.r {
+background-color: #f0fbff;
+}
+```
+```{css, echo=FALSE, eval=F}
+pre {
+  max-height: 300px;
+  overflow-y: auto;
+}
+```
+
+
+## How to write .h5 input to run covRunner.py
+
+Will have different H5I_GROUPS (which names need to match the following ones): <br/>
+
+##### 1. **`phenotypes/`**
+
+1.1. subgroup: *`<pheno_subgroup>/`* (e.g. "data_bcNcovariates") <br/>
+  
+  - \<pheno_subgroup\> corresponds to 'phenos_version'<br/> (refers to the type of phenotypes to analyse, e.g. phenotypes that went through different type of normalization)
+  - passed with `--phenos_v` option (**required**); in code, is stored in `self.phenos_version` <br/>
+
+1.2. datasets: <br/>
+
+  - `['matrix']`;
+  - `['col_header']['phenotype_ID']`;
+  - `['col_header']['covariatesUsed']`; per each phenotype, the comma-sep string of covariates used - names corresponding to `covariate_ID` in `covariates/` (e.g. "sex,age,Batch", "sex,Batch"...)
+  - `['row_header']['sample_ID']`
+  
+<br/>
+
+##### 2. **`covariates/`**
+2.1. subgroup: *`<cov_subgroup>/`* (e.g. "data_bcNcovariates") <br/>
+  
+  - \<cov_subgroup\> corresponds to 'covs_version' <br/> (similar to pheno_subgroup)
+  - passed with `--covs_v` option (**required**, set 'None' if not used); in code, is stored in `self.covs_version` <br/>
+
+2.2. datasets: <br/>
+
+  - `['matrix']`;
+  - `['col_header']['covariate_ID']`; e.g. "sex", "age", "Batch"
+  - `['row_header']['sample_ID']`
+
+<br/>
+
+##### 3. **`cages/`**
+3.1. subgroup: *`<cage_subgroup>/`* (e.g. "all") <br/>
+  
+  - \<cage_subgroup\> corresponds to 'cage_version' <br/> (for different batches or analysis)
+  - passed with `--cage_v` option (**required**); in code, is stored in `self.cage_version` <br/>
+
+3.2. datasets: <br/>
+
+  - `['array']`; 
+  - `['sample_ID']`
+
+<br/>
+
+##### 4. **`dam/`**
+4.1. subgroup: *`<dam_subgroup>/`* (e.g. "mother_name") <br/>
+  
+  - \<dam_subgroup\> corresponds to 'dam_version' <br/> (for different batches or analysis)
+  - passed with `--dam_v` option (**required**, set 'None' if not used); in code, is stored in `self.dam_version` <br/>
+
+4.2. datasets: <br/>
+
+  - `['array']`; 
+  - `['sample_ID']`
+
+<br/>
+
+##### 5. **`GRM/`** or **`GRM_LOCO/`**
+5.1. subgroup: *`<GRM_subgroup>/`* (e.g. "Andres_kinship") <br/>
+  
+  - \<GRM_subgroup\> corresponds to 'GRM_version' <br/>
+  - passed with `--grm_v` option (**required**); in code, is stored in `self.GRM_version` <br/>
+
+5.2. datasets: <br/>
+
+  - `['matrix']`; 
+  - `['row_header']['sample_ID']`
+
+<br/>
+
+##### 6. **`sex_cov/`**
+6.1. subgroup: *`<sex_subgroup>/`* (e.g. "all") <br/>
+  
+  - \<sex_subgroup\> corresponds to 'sex_version'
+  - passed with `--sex_v` option, optional (default is 'None'); in code, is stored in `self.sex_version` <br/>
+
+6.2. datasets: <br/>
+
+  - `['array']`; 
+  - `['sample_ID']`
+
+<br/>
+
+
+##### 7. **`subsets/`** <br/>
+7.1. *`<subset_name>`* (e.g. "include") <br/>
+
+  - \<subset_name\> is the name of a specific subset, to handle optional subset of individuals, e.g. excluding singletons
+  - passed with `-s` option, optional (default is 'None')
+  
+7.2 datasets: <br/>  
+
+  - `['<subset_name>']`: contains all sample_id that are part of the subset
+
+<br/><br/>
+
+
+
+#### Examples
+
+##### A. input.h5 
+In R can look at it using, `h5ls("input.h5")`. NB: in this example there is no group "subsets"
+```{r , eval=T, comment = NA, echo=F}
+library("rhdf5")
+h5ls("~/PRJs/HSmice/output/dataset/HSmice_wPleth_noEpoch_HT_v2.h5", )[c("group", "name", "otype")]
+```
+<br/>
+
+##### B. Example of running the code
+
+Modelling univariate DGE+IEE+cageEffect (i.e. no IGE but include IEE)
+```{bash , eval=F, comment = NA, echo=T}
+  python covRunner.py \
+        --input HSmice.h5 \
+        --phenos_v data_bcNcovariates \
+        --covs_v data_bcNcovariates \
+        --cage_v all \
+        --grm_v Andres_kinship \
+        --analysis_type VD \
+        --out ./ \
+        -p 1 \
+        -m uni \
+        -e DGE,IEE,cageEffect
+```
+<br/>     
+
+Modelling bivariate DGE+IGE+cageEffect+maternalEffect
+```{bash , eval=F, comment = NA, echo=T}
+  python covRunner.py \
+        --input HSmice.h5 \
+        --phenos_v data_bcNcovariates \
+        --covs_v data_bcNcovariates \
+        --cage_v all \
+        --dam_v mother_name \
+        --grm_v Andres_kinship \
+        --analysis_type VD \
+        --out ./ \
+        -p 1 \
+        -c combins.csv \
+        -m bi \
+        -e DGE,IGE,cageEffect,maternalEffect \
+```
+<br/>       
+
+Modelling sexvariate DGE+IGE+cageEffect, with corr_As1s2 constrained to 1
+```{bash , eval=F, comment = NA, echo=T}
+  python covRunner.py \
+        --input HSmice.h5 \
+        --phenos_v data_bcNcovariates \
+        --covs_v data_bcNcovariates \
+        --cage_v all \
+        --grm_v Andres_kinship \
+        --sex_v all \
+        --analysis_type VD \
+        --out ./ \
+        -p 1 \
+        -m sex \
+        -e DGE+IGE+cageEffect  \
+        -z corr_As1s2,1
+```

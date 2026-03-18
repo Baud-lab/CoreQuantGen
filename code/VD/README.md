@@ -40,7 +40,7 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
 
   - `['array']`; 
   - `['sample_ID']`
-
+<br/> 
 
 ### 4. **`dam/`**
 4.1. subgroup: *`<dam_subgroup>/`* (e.g. "mother_name") <br/>
@@ -52,7 +52,7 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
 
   - `['array']`; 
   - `['sample_ID']`
-
+<br/> 
 
 ### 5. **`GRM/`** or **`GRM_LOCO/`**
 5.1. subgroup: *`<GRM_subgroup>/`* (e.g. "Andres_kinship") <br/>
@@ -64,7 +64,7 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
 
   - `['matrix']`; 
   - `['row_header']['sample_ID']`
-
+<br/> 
 
 ### 6. **`sex_cov/`**
 6.1. subgroup: *`<sex_subgroup>/`* (e.g. "all") <br/>
@@ -76,7 +76,7 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
 
   - `['array']`; 
   - `['sample_ID']`
-
+<br/> 
 
 ### 7. **`subsets/`** <br/>
 7.1. *`<subset_name>`* (e.g. "include") <br/>

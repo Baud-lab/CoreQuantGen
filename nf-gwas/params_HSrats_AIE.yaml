@@ -1,0 +1,18 @@
+# params draft
+h5:       "/users/abaud/htonnele/PRJs/P50_HSrats/microbiome_ht/output/microb_prep/h5files/HSrats_AIE_NY.h5"
+outdir:   "/users/abaud/htonnele/PRJs/P50_HSrats/gwas/output/"
+phenov:   "sgb_cecal"
+covsv:    "None"
+cagev:    "all657"
+grmv:     "P50_Rn7"
+damv:     "mother_name"
+subset:   "NY"
+effects:  "DGE,cageEffect,maternalEffect"
+dsnpv:    "P50_Rn7_direct"
+ssnpv:    "None"
+gwas:     "dGWAS"
+
+phenotypes: "all"
+chromosomes: "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"
+
+#pheno_list: null

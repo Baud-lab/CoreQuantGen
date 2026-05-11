@@ -37,7 +37,7 @@ parser.add_argument('--grm_v', help= 'kinship type, i.e. name of subgroup of `GR
 parser.add_argument('--analysis_type', help= 'set `VD` for heritability analysis or `null_covars_LOCO` for generating the covariance matrices of the null model for Leave One Chromosome Out GWAS', required=True)
 
 # Optional arguments
-parser.add_argument('--sex_v', help= 'type of SEX version to use, i.e. name of subgroup of `sex_cov` in .h5, e.g. all, needed for sexvariate', default=None)
+parser.add_argument('-S','--sex_v', help= 'type of SEX version to use, i.e. name of subgroup of `sex_cov` in .h5, e.g. all, needed for sexvariate', default=None)
 parser.add_argument('-o','--out', help = 'path to folder in which create output folders and files [default="."]', default=".")
 parser.add_argument('-c','--combins_path',nargs="?", help = 'path to file with pairs of phenotypes to compare (.csv), needed for bivariate')
 parser.add_argument('-p','--pheno', type=int_or_str, help = 'Number of phenotypes col to analyse, or line to combins file with pair of phenotypes in case of bivar [default=1]', default=1)
@@ -239,8 +239,8 @@ if __name__=='__main__':
     #		  B1. PARSING INPUT .h5 with SocialData() 
     #-----------------------------------------------------------------#	 
     ## will now use code in social_data_wMat.py 
-    # Order in SocialData (self, in_file=None, phenos_version = None,covs_version=None, cage_version=None, dam_version = None, GRM_version = None, subset = None, chrom = None)
-    
+    # Order in SocialData (self, in_file=None, phenos_version = None,covs_version=None, cage_version=None, dam_version = None, GRM_version = None, sex_version = None, subset = None, chrom = None)
+
     #pdb.set_trace()
     data = SocialData(in_file, phenos_version, covs_version, cage_version, dam_version, GRM_version, sex_version, subset, chrom=trait_chrom)
     
@@ -580,7 +580,7 @@ if __name__=='__main__':
             #pdb.set_trace()
             
             ### 1a. Get data from 'data' ###
-            data = SocialData(in_file, phenos_version, covs_version, cage_version, dam_version, GRM_version, subset, chrom)
+            #data = SocialData(in_file, phenos_version, covs_version, cage_version, dam_version, GRM_version, subset, chrom)
             doto = data.get_data(selected_pheno) # if int, NOT YET in python 0-indexing
             assert trait1 == doto['trait'], "something wrong in parsing data, doto['trait'] and trait1 do not correspond"
             #trait=doto['trait']

@@ -93,7 +93,7 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
 ## Examples
 
 ### A. input.h5 
-In R can look at it using, `h5ls("input.h5")`. NB: in this example there is no group "subsets"
+In R can look at it using, `h5ls("input.h5")`
 ```
                                        group               name       otype
 0                                          /                GRM   H5I_GROUP

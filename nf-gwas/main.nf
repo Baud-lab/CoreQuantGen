@@ -1,8 +1,8 @@
 #!/usr/bin/env nextflow
 
-include { GET_PHENOS        }  from './modules/get_phenos/main.nf'
-include { NULL_COVAR        }  from './modules/null_covar/main.nf'
-include { MAP_LOCO          }  from './modules/map_loco/main.nf'
+include { GET_PHENOS }  from './modules/get_phenos/main.nf'
+include { NULL_COVAR }  from './modules/null_covar/main.nf'
+include { MAP_LOCO   }  from './modules/map_loco/main.nf'
 
 /*
  * Required params
@@ -40,7 +40,7 @@ include { MAP_LOCO          }  from './modules/map_loco/main.nf'
 //  */
 // params.chromosomes = "10"
 // 
-params.pheno_list = null // if null, execute module to get one - easy R code, reading h5, taking col names and output pheno_list 
+//params.pheno_list = null // if null, execute module to get one - easy R code, reading h5, taking col names and output pheno_list 
 
 
 workflow {

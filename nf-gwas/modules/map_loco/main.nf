@@ -5,7 +5,7 @@ process MAP_LOCO {
     publishDir{"${params.outdir}/${meta.pval_dir}"}, mode: 'copy'
 
     label 'mem_40'
-    label 'time_1h'
+    label 'time_2h'
     
     input:
     tuple val(meta), path(null_covs), val(chrs_list), path(h5), val(phenov), val(covsv), val(cagev), val(grmv), val(damv), val(dsnpv), val(ssnpv), val(eff), val(gwas), val(subset)

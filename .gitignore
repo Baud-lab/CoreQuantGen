@@ -1,5 +1,15 @@
+# folder related to tests
 test*/
+output/
+
+# folder and cache related to python runs
 pysrc/classes/__pycache__/
 pysrc/run_expbivar_*.sh
 __pycache__/
-output/
+
+# nextflow related
+.nextflow.log*
+.nextflow/
+log/
+trace/
+params*.yaml

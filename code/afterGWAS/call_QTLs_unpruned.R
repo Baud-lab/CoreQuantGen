@@ -1,12 +1,15 @@
 library(rhdf5)
 library(parallel)
 
-pval_dir = "~/PRJs/P50_HSrats/gwas/output/pvalues_LOCO/univariate/P50_Rn7_direct/sgb_cecal/dGWAS/P50_Rn7_NY_DGE_cageEffect_maternalEffect/"
 alpha = 0.0001
-outdir = "/no_backup/abaud/data/secondary/HSrats_gwas/rn7/shotgun_NY_DGE_cageEffect_maternalEffect/"
+# For Cohort
+pval_dir = "..."
+outdir = "..."
+
+# For all
+cumpos_file = "..." 
 outsnps = file.path(outdir, paste0("sgb_cecal_snps_unpruned.RData"))
 outqtls = file.path(outdir, paste0("sgb_cecal_QTLs_a",alpha,"_unpruned.tsv"))
-cumpos_file = "/users/abaud/data/secondary/cumpos_P50_rats_Rn7.RData" 
 
 # Getting all files, one per phenotype
 files = list.files(pval_dir, pattern = ".h5", full.names = T)
@@ -229,7 +232,7 @@ get_QTLs = function(all_snps, windowsize=1500000, alpha=0.0001){ #pheno_name
 #res = lapply(files[c(367)], get_snps)
 # Careful: can lead to mem issue leading to errors - and null in file
 # can check by `grep "P values present for all chromosomes"` in log file
-res = mclapply(files, get_snps, mc.cores = 4) 
+res = mclapply(files, get_snps, mc.cores = 6) 
 cat("phenos in res", length(res),"\n")
 
 qtls = lapply(res, get_QTLs, alpha = alpha)

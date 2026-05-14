@@ -3,12 +3,15 @@ library(tibble) # column_to_rownames()
 library(dplyr) # mutate()
 library(tidyr) # separate()
 
-qtl_file = "~/PRJs/P50_HSrats/gwas/output/pvalues_LOCO/univariate/P50_Rn7_direct/sgb_cecal/dGWAS/P50_Rn7_NY_DGE_cageEffect_maternalEffect/snps_QTLs_a1e-04_unpruned.RData"
-tax_file = "~/PRJs/P50_HSrats/microbiome_ht/output/microb_prep/cecal/taxonomy.Rdata"
-dict_file = "/no_backup/abaud/data/secondary/databases/chocoPhlAn/mpa_vJan25_CHOCOPhlAnSGB_202503_SGB2GTDB.tsv"
-outfile = "~/PRJs/P50_HSrats/gwas/output/pvalues_LOCO/univariate/P50_Rn7_direct/sgb_cecal/dGWAS/P50_Rn7_NY_DGE_cageEffect_maternalEffect/snps_QTLs_toplot.RData"
-outqtls = "~/PRJs/P50_HSrats/gwas/output/pvalues_LOCO/univariate/P50_Rn7_direct/sgb_cecal/dGWAS/P50_Rn7_NY_DGE_cageEffect_maternalEffect/top_QTLs.tsv"
-study = "NY"
+# All
+tax_file = "..."
+dict_file = "..."
+
+# Cohort
+study = "..."
+qtl_file = "..."
+outplot = "snps_QTLs_toplot.RData"
+outqtls = "top_QTLs.tsv"
 
 # Loading 'unpruned_bug_QTLs'
 # for porcupine plot for individual cohorts (Fig 4):

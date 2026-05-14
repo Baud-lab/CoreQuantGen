@@ -1,6 +1,6 @@
-toplot_file = "~/PRJs/P50_HSrats/gwas/output/pvalues_LOCO/univariate/P50_Rn7_direct/sgb_cecal/dGWAS/P50_Rn7_NY_DGE_cageEffect_maternalEffect/snps_QTLs_toplot.RData"
-outfile = "~/PRJs/P50_HSrats/gwas/plot/porcupine_sgb_cecal_NY.png"
-color_file = "~/PRJs/P50_HSrats/gwas/plot/porcupine_colors.RData"
+toplot_file = "snps_QTLs_toplot.RData"
+outfile = "porcupine_sgb_cecal_NY.png"
+color_file = "porcupine_colors.RData"
   
 # Loading res to plot
 cat("loading data to plot\n")

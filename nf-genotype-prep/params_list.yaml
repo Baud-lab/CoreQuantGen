@@ -1,0 +1,30 @@
+#### Execution options
+skip_vcf:     true
+skip_bychr:   true
+skip_pruning: true
+skip_grm:     true
+
+#### Output
+outdir: 
+
+#### Input
+# ---if skip_vcf is False---
+# > vcf file as input
+input_vcf: 
+# > file with list of individuals for which want to take genotypes
+individ: 
+# ---if skip_vcf is True---
+# > plink file - as prefix to .bed,.bim.fam 
+plink_file: 
+
+# > list of chromosomes as in vcf or plink file
+chr: "1..20"
+
+#### prune options
+prune_window: 50
+prune_step: 5
+prune_r2: 2
+
+#### GRM options
+maf: 0.05
+geno: 0.1

@@ -1,6 +1,7 @@
 process simP_fromH5{
   fair true // simulate in order of val1: seed1, seed2 ... ; val2: seed1, seed2 ... ; ...
   publishDir("${outputSim}/${value_oi}/${seed_oi}/", mode: 'copy')
+  container "docker://tonnelene/r-simulations:1.0"
   
   input:
   tuple val(value_oi), val(seed_oi), path(sim_h5)

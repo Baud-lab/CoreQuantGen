@@ -1,8 +1,14 @@
+###### SKIP SIMULATIONS - only analysis
+skip_simulations: false
+
 ###### INPUT/OUTPUT FILES
 original_H5:     "" # path to original data h5 file 
 original_params: "" # path to starting parameter file
 output_folder:   "" # path to main output folder, e.g. ./simHSmice/
 pipeline_info:   "" # path to folder to store pipeline info, trace, timeline... htmls
+# if skip_simulations is True:
+sim_h5:
+combin:
 
 ###### PARAMS FOR SIMULATIONS
 SIT:      ""     # corresponding to name of the set of simulations
@@ -30,3 +36,5 @@ PHENOV:    "mockphenos" # name of phenotype, will be "mockphenos" unless changed
 COVSV:     "None"       # none unless simulate them
 EFFECTS:   ""           # effects to include in analysis can be any of DGE,IGE,IEE,cageEffect,maternalEffect (NB: IEE is included by default if IGE)
 CORR_NULL: "None"       # correlation to constrain comma-sep with the value to constrain, can be 0 or 1 - e.g. "corr_Ad1s2,0" or "corr_As1s2,1"
+PERM:      "no"         # 'yes' or 'no' for scrambling cages to test IGE is not random with permutations
+CACHE_VD:  true         # if set to false, run_VD is run again, useful when the set of simulations is run already and want to analyse the same phenotypes again (e.g. while scrambling cages) 

@@ -1,10 +1,15 @@
 # folder related to tests
 test*/
 output/
+# input files
+input/
+params/ 
+# scripts to submit
+submit*
 
 # folder and cache related to python runs
-pysrc/classes/__pycache__/
-pysrc/run_expbivar_*.sh
+code/VD/classes/__pycache__/
+code/VD/test*
 __pycache__/
 
 # nextflow related
@@ -12,4 +17,3 @@ __pycache__/
 .nextflow/
 log/
 trace/
-params*.yaml

@@ -1,4 +1,5 @@
 process run_VD{
+  container "docker://tonnelene/py_corequantgen:1.1"
   fair true // goes in order
   publishDir("$outputVD/$trait1")
   tag{ "$trait1-$row_num" }
@@ -8,7 +9,7 @@ process run_VD{
   }
 
   time {
-    def base = [uni: 1.h, bi: 20.h, sex: 2.h][params.vdMODEL] ?: 1.h
+    def base = [uni: 1.h, bi: params.bitime, sex: 2.h][params.vdMODEL] ?: 1.h
     (base * task.attempt)
   }
   

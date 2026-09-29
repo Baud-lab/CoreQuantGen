@@ -3,9 +3,9 @@
 #SBATCH --mem 6G
 #SBATCH -p genoa64
 #SBATCH --qos pipelines
-#SBATCH --output=/nfs/scratch01/abaud/htonnele/logs/nf-pipelines/%x_%A.out
-#SBATCH --error=/nfs/scratch01/abaud/htonnele/logs/nf-pipelines/%x_%A.err
-#SBATCH --job-name VD_CFW
+#SBATCH --output=<scratch_path>/logs/nf-pipelines/%x_%A.out ## EDIT HERE
+#SBATCH --error=<scratch_path>/logs/nf-pipelines/%x_%A.err ## EDIT HERE 
+#SBATCH --job-name ... ## EDIT HERE: give job name
 
 # Configure bash
 set -e          # exit immediately on error
@@ -35,14 +35,10 @@ echo "making output directory if needed"
 
 mkdir -p "./log/"
 mkdir -p "./trace/"
-mkdir -p "./output/CFW/"
+mkdir -p "./output/sim<POP>/" ## EDIT HERE: with name of population/dataset
 
-WORKMAIN="/nfs/scratch01/abaud/htonnele/nf_PRJs/nf-CoreQuantGen/realdata/"
-mkdir -p "$WORKMAIN/work_CFW"
-
-PARFILE="params/params.CFW_bi.yaml"
-#PARFILE="params/params.CFW_uni.yaml"
-#PARFILE="params/params.CFW_sex.yaml"
+# define params file
+PARFILE="params/params.sim<POP>.set<SETNAME>.yaml" ## EDIT HERE: with path to params
 
 mydate=$(date +"%Y%m%d_%H%M")
 
@@ -62,20 +58,21 @@ pwd
 echo "launching nextflow run"
 nextflow run -ansi-log false main.nf \
              -profile crg \
-             -params-file $PARFILE -c nextflow.config \
-             -w $WORKMAIN/work_CFW/ \
-             -with-trace -resume > log/nfRun_CFW_${mydate}.log & pid=$!
+              -c nextflow.config -params-file $PARFILE \
+             -w <scratch_dir>/nf_workdir/CoreQuantGen/simulations/work_sim<POP>/ \
+             -with-trace -resume > log/sim<POP>_set<NAME>_${mydate}.log & pid=$!
+             ## EDIT HERE: -w <scratch_dir>/nf_workdir/CoreQuantGen/simulations/work_sim<POP>/ : with work directory 
+             ##            log/sim<POP>_set<NAME>${mydate}.log                                 : name of population/dataset and name of set
 
 # Wait for the pipeline to finish
 echo "Waiting for ${pid}"
 wait $pid
 
 # Move trace to trace folder
-TRACE=$(basename trace-*)
-mv -v $TRACE trace/${TRACE}.CFW
+mv ./trace-* ./trace/
 
 # Return 0 exit-status if everything went well
 exit 0
 
 # Cmd to run
-#sbatch submit_CFW.sh
+#sbatch submit_sim<POP>.sh ## EDIT HERE: with he name of the file

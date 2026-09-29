@@ -1,4 +1,6 @@
 process txtToRdata{
+  container "docker://tonnelene/r-simulations:1.0"
+  
   cache false // so that it runs again when running failed tasks
   publishDir("$outputVD/", mode: 'copy')
   tag{ trait1 }

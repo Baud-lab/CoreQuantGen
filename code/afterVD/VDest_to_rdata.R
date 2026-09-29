@@ -4,9 +4,9 @@
 ### PARSING ESTIMATE AND STE AFTER EXP_BIVAR - BIVARIATE AND UNIVARIATE ###
 ###########################################################################
 
-# Get function to prepare results, colest and colste --> change them there if change them in exp_bivar
-suppressMessages(library("here"))
-source(here("./code/afterVD/Rfun", "prepare_res.R"))
+### Get function to prepare results, colest and colste --> change them there if change them in exp_bivar
+##suppressMessages(library("here"))
+##source(here("./code/afterVD/Rfun", "prepare_res.R"))
 
 suppressMessages(library("optparse"))
 
@@ -23,29 +23,92 @@ option_list = list(make_option("--est", action="store", default=NA, type='charac
 
 opt = parse_args(OptionParser(option_list=option_list))
 
+### GETTING OPTIONS
 est_file = opt$est
 ste_file = opt$ste
 outRdata = opt$out
-corr0 = if(opt$corr0 == "None"){corr0 = NULL}else{corr0 = opt$corr0}
+if(opt$corr0 == "None"){corr0 = NULL}else{corr0 = opt$corr0}
 swap=opt$swap
 
+### DEFINE FUCNTIONS 
+# My results
+# Fx 1 : preparing results, from original dataset, removing unused columns (nocol)
+# TODO: put this to source if it works !!!!!!
+prepare_res = function(res, nocol = c('sample_size','sample_size_all','covariates_names', 'conv', 'LML')){
+  # assigning taskID = name phenoytpe1_phenotype2
+  #     TODO: check how it works with univariate, imagine it would be something like trait1_None, trait2_None...
+  #     if want something different can do 
+  #     if ("trait2" %in% nocol) {res[,"taskID"] = res[,"trait1"] # or res[,"taskID"] = paste0(res[,"trait1"], "univariate")}
+  order_cols = c("taskID",colnames(res))
+  res[,"taskID"] = paste(res[,"trait1"], res[,"trait2"], sep='_') # NB: like this also have the same name that is saved as _est.txt _STE.txt output files
+  res = res[,order_cols]
+  
+  # filtering out unwanted columns
+  res = res[,! colnames(res) %in% nocol]
+  # removing columns with all -999 i.e. NAs
+  NAs =  apply(res, 2, FUN = function(res) all(res == -999))
+  res = res[!NAs]
+  res[res==-999] = NA # see if want to try this too
+  return(res)
+}
+colest = c('trait1', 'trait2', 'sample_size1', 'sample_size1_cm', 'sample_size2', 'sample_size2_cm', #6
+           'union_focal', 'inter_focal', 'union_cm', 'inter_cm', #4
+           'covariates_names', 'conv', 'LML', #3
+           'prop_Ad1', 'prop_Ad2','prop_As1', 'prop_As2', #4
+           'corr_Ad1d2', 'corr_Ad1s1', 'corr_Ad1s2', 'corr_Ad2s1','corr_Ad2s2', 'corr_As1s2', #6
+           'prop_Ed1', 'prop_Ed2','prop_Es1', 'prop_Es2', #4
+           'corr_Ed1d2', 'corr_Ed1s1', 'corr_Ed1s2', 'corr_Ed2s1', 'corr_Ed2s2', 'corr_Es1s2', #6
+           'prop_Dm1', 'prop_Dm2', 'corr_Dm1Dm2', #3
+           'prop_C1',  'prop_C2', 'corr_C1C2', #3
+           'tot_genVar1', 'tot_genVar2', #2
+           'total_var1', 'total_var2') #2
+
+colste = c('trait1', 'trait2', 'time_exec',
+           'STE_Ad1', 'STE_Ad2', 'STE_As1', 'STE_As2', 
+           'STE_Ad1d2',  'STE_Ad1s1', 'STE_Ad1s2',  'STE_Ad2s1', 'STE_Ad2s2',  'STE_As1s2',
+           'STE_Ed1', 'STE_Ed2', 'STE_Es1', 'STE_Es2', 
+           'STE_Ed1d2', 'STE_Ed1s1','STE_Ed1s2', 'STE_Ed2s1', 'STE_Ed2s2', 'STE_Es1s2',
+           'STE_Dm1', 'STE_Dm2', 'STE_Dm1Dm2',
+           'STE_C1C2', # NB: because of the way we calculate STE we cannot get STE for C1/C2; 
+           'STE_totv1', 'STE_totv2',
+           'corParams_Ad1_As1', 'corParams_Ed1_Es1', 'corParams_Ed1_Dm1', 'corParams_Es1_Dm1', 
+           'corParams_Ad2_As2', 'corParams_Ed2_Es2', 'corParams_Ed2_Dm2', 'corParams_Es2_Dm2')
+
+ste_dict = c("STE_Ad1", "STE_Ad2", "STE_As1", "STE_As2", "STE_Ad1d2", "STE_Ad1s1", "STE_Ad1s2",
+             "STE_Ad2s1", "STE_Ad2s2", "STE_As1s2", "STE_Ed1", "STE_Ed2", "STE_Es1", "STE_Es2", "STE_Ed1d2", "STE_Ed1s1",
+             "STE_Ed1s2", "STE_Ed2s1", "STE_Ed2s2", "STE_Es1s2", 'STE_Dm1', 'STE_Dm2', 'STE_Dm1Dm2', "STE_C1C2", "STE_totv1", "STE_totv2") # NB: don't have STE_C1, STE_C2, have STE_totv instead
+# STE_totv1 --> total_var1
+names(ste_dict) = ste_dict
+
+for (e in seq_along(ste_dict)){
+  p = gsub("STE_", "", ste_dict[e])
+  #print(p)
+  if (length(grep("tot", p)) > 0) {n = gsub("totv", "total_var", p)}
+  else if (nchar(p) < 4) {n = paste0("prop_", p)}
+  else {n = paste0("corr_", p)}
+  ste_dict[e] = n
+}
+rm(e,p,n)
+cat("Dictionary STE_name - param_name created\n")
+
+#### START WITH ANALYSIS
 ### Reading estimates
-est <- read.csv(file = est_file, sep = "\t", header = F)
+est = read.csv(file = est_file, sep = "\t", header = F)
 if(length(colest) != ncol(est)){
   stop("Something wrong with number of columns and colnames")
 }
-colnames(est) <- colest
+colnames(est) = colest
 est = prepare_res(est, nocol = c("")) 
 #est[1:10,]
 
 ### Reading STE
 #ste_file = gsub("_est", "_STE", est_file)
 if (! is.null(ste_file)){
-  ste <- read.csv(file = ste_file,  sep = "\t", header = F)
+  ste = read.csv(file = ste_file,  sep = "\t", header = F)
   if(length(colste) != ncol(ste)){
     stop("Something wrong with number of columns and colnames")
   }
-  colnames(ste) <- colste
+  colnames(ste) = colste
   ste = prepare_res(ste, nocol = c(""))
   
   # gives problem with repeated values...
@@ -57,7 +120,7 @@ if (! is.null(ste_file)){
 }
 
 swap_col = function(df){
-  colnames(df) <- gsub("C2C1", "C1C2", 
+  colnames(df) = gsub("C2C1", "C1C2", 
                         gsub("s2s1","s1s2", 
                              gsub("d2d1","d1d2", 
                                   gsub("3","2",
@@ -75,13 +138,15 @@ if(swap){
   ste=swap_col(ste)
   ste=ste[,match(c("taskID",colste), colnames(ste), nomatch = 0)]
   
-  corr0 = gsub("C2C1", "C1C2", 
-              gsub("s2s1","s1s2", 
-                   gsub("d2d1","d1d2", 
-                        gsub("3","2",
-                             gsub("4","1", 
-                                  gsub("2","4", 
-                                       gsub("1","3", corr0)))))))
+  if(!is.null(corr0)){
+    corr0 = gsub("C2C1", "C1C2", 
+                 gsub("s2s1","s1s2", 
+                      gsub("d2d1","d1d2", 
+                           gsub("3","2",
+                                gsub("4","1", 
+                                     gsub("2","4", 
+                                          gsub("1","3", corr0)))))))
+  }
 }
 
 ### Merging the two
@@ -114,19 +179,23 @@ if (!is.null(corr0)){
     # doing it again in case something got filtered out
     #row_constrained = which(est[,corr0] == 0) # doesn't work when constrain is 1
     
-    VCs <- merge(x = est[-row_constrained,], y =ste[-row_constrained,], by=c("taskID","trait1","trait2"))
-    VCs0 <- merge(x = est[row_constrained,], y =ste[row_constrained,], by=c("taskID","trait1","trait2"))
+    VCs = merge(x = est[-row_constrained,], y =ste[-row_constrained,], by=c("taskID","trait1","trait2"))
+    VCs0 = merge(x = est[row_constrained,], y =ste[row_constrained,], by=c("taskID","trait1","trait2"))
   } else{
-    VCs <- est[-row_constrained,]
+    VCs = est[-row_constrained,]
   }
   VCs[,"pv_chi2dof1"] = NA
   VCs[,'pv_chi2dof1'] = pchisq(2*(-est[-row_constrained,'LML']+est[row_constrained,'LML']),lower.tail = FALSE, df=1)
 } else {
   VCs0 = NULL
   if (!is.null(ste)){
-    VCs <- merge(x = est, y =ste, by=c("taskID","trait1","trait2"))
+    if(any(duplicated(est$taskID))){
+      est$taskID[duplicated(est$taskID)] = paste0(est$taskID[duplicated(est$taskID)], 1:sum(duplicated(est$taskID)))
+      ste$taskID[duplicated(ste$taskID)] = paste0(ste$taskID[duplicated(ste$taskID)], 1:sum(duplicated(ste$taskID)))
+      }
+    VCs = merge(x = est, y = ste, by = c("taskID","trait1","trait2"))
   }else{
-    VCs <- est
+    VCs = est
   }
 }
 

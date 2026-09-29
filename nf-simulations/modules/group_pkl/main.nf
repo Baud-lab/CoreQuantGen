@@ -1,6 +1,7 @@
 process group_pkl{
     publishDir("${outputVD}/${value_oi}/${seed_oi}/${suboutVD}", mode: 'copy')
     cache false // cache false so that repeat every time - this is to make sure that it is done everytime that run the analysis
+    container "community.wave.seqera.io/library/python_pip_pandas:0a27509c7c11c41b"
     
     input:
 	  val(outfile)

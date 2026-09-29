@@ -2,7 +2,11 @@
 process run_simulations{
   fair true // simulate in order of val1: seed1, seed2 ... ; val2: seed1, seed2 ... ; ...
   publishDir("${outputSim}/${value_oi}/${seed_oi}/", mode: 'copy')
-  memory='5.G' 
+  //container "community.wave.seqera.io/library/bioconductor-rhdf5_r-matrixcalc_r-optparse:7fd7f5b88b021687"
+  container "docker://tonnelene/r-simulations:1.0"
+  //container "community.wave.seqera.io/library/bioconductor-rhdf5_r-matrixcalc:a7fc26a330dee0a8"
+  
+  label 'mem_5'
   
   input:
   path(orH5) // this is always the same

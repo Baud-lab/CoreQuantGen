@@ -1,13 +1,15 @@
 process run_VD{
+  cache params.CACHE_VD
   fair true // goes in order
-  tag{ "$row_num" }
+  tag{ "pheno_pair:$row_num;value:$value_oi;seed:$seed_oi" }
+  container "docker://tonnelene/py_corequantgen:1.1"
   
   memory {
-    (params.vdMODEL == 'bi' ? 6.GB : 3.GB)
+    (params.vdMODEL == 'bi' ? 4.GB : 3.GB)
   }
 
   time {
-    def base = [uni: 1.h, bi: 20.h, sex: 2.h][params.vdMODEL] ?: 1.h
+    def base = [uni: 1.h, bi: 10.h, sex: 2.h][params.vdMODEL] ?: 1.h
     (base * task.attempt)
   }
   
@@ -17,7 +19,7 @@ process run_VD{
   }
 
   input:
-  tuple val(row_num), val(combins_path), val(value_oi), val(seed_oi), path(sim_h5), val(pheno), val(covs), val(cage), val(dam), val(grm), val(sexv), val(subset), val(model), val(effects), val(corr0)
+  tuple val(row_num), val(combins_path), val(value_oi), val(seed_oi), path(sim_h5), val(pheno), val(covs), val(cage), val(dam), val(grm), val(sexv), val(subset), val(model), val(effects), val(corr0), val(perm)
   val(dirstr)
 
   output:
@@ -44,7 +46,8 @@ process run_VD{
         -s ${subset} \
         -m ${model} \
         -e ${effects} \
-        -z ${corr0}
+        -z ${corr0} \
+        -P ${perm}
         
   cp ${dirstr}*_est.txt .
   cp ${dirstr}*_STE.txt .

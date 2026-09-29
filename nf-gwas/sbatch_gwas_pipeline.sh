@@ -46,9 +46,9 @@ mydate=$(date +"%Y%m%d_%H%M")
 nextflow run main.nf \
     -ansi-log false \
     -w /lustre/scratch03/abaud/htonnele/nf_workdir/gwas/work_HSrats \
-    -params-file params_HSrats_AIE_MI.yaml \
+    -params-file params/params_HSrats_AIE_MI.yaml \
     -profile crg -with-trace -resume > log/gwas_HSrats_AIE_${mydate}.log & pid=$!
-#    -params-file params_HSrats_AIE_NY.yaml \
+#    -params-file params/params_HSrats_AIE_NY.yaml \
     
 
 # Wait for the pipeline to finish

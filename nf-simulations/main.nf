@@ -16,8 +16,11 @@ include{ group_pkl                  } from "./modules/group_pkl/main"
 subdir    = "cage_${params.NCAGES}/set$params.SIT/${params.P}/"
 outputSim = "${params.output_folder}/mockphenos/${subdir}" // "${params.output_folder}/simulations/${subdir}"
 outputVD  = "${params.output_folder}/VD/${subdir}"
-suboutVD  = "${params.vdMODEL}variate/${params.PHENOV}/" // this is to replicate dir structure from expbivar // ${params.GRMV}"+"_"+"${params.EFFECTS}".replace(",","_")
-
+if (params.PERM == "yes"){
+  suboutVD  = "${params.vdMODEL}variate/${params.PHENOV}/permutations" // this is to replicate dir structure from expbivar // ${params.GRMV}"+"_"+"${params.EFFECTS}".replace(",","_")
+}else{
+  suboutVD  = "${params.vdMODEL}variate/${params.PHENOV}/"
+}
 // GENERAL WORKFLOW:
 workflow{
     values  = Channel.fromList(params.V)
@@ -27,65 +30,82 @@ workflow{
     nphenos = channel.of(params.NPHENO)
     
     //def val_seed = Channel.of(zip(values, seeds))
+    if(!params.skip_simulations){
+      
+        // ------ 1. creating file with parameters to simulate, setting a specific value for a specific parameter
+        starting_pars( "${params.original_params}", params.SIT, params.P, values )
+        
+        // combine seeds to each value 
+        val_seed = starting_pars.out.combine( seeds )
+        // store simulations characteristics - input of sun_simulations
+        // tuple val(value_oi), path(simCsv), val(seed_oi), val(grmv), val(cagev), val(damv), val(sexv), val(pop), val(npheno), val(model), val(ncages), val(subv), val(nas), val(orphenov) 
+        sim_char = val_seed.map{ [it[0], 
+                                  it[1], 
+                                  it[2], 
+                                  params.GRMV, 
+                                  params.CAGEV, 
+                                  params.DAMV,
+                                  params.SEXV,
+                                  params.POP, 
+                                  params.NPHENO, 
+                                  simMode, 
+                                  params.NCAGES, 
+                                  params.SUBV, 
+                                  params.NAs, 
+                                  params.ORPHENOV ]
+                               } 
+        
+        // ------ 2. run simulations 
+        run_simulations("${params.original_H5}", sim_char, "${outputSim}")
+        simFiles = run_simulations.out // value, seed, sim_h5
+        //simFiles.view()
     
-    // ------ 1. creating file with parameters to simulate, setting a specific value for a specific parameter
-    starting_pars( "${params.original_params}", params.SIT, params.P, values )
+        // ------ 3. getting simulated parameters (this will have the proportionals as well) from h5 
+        //           another way to keep track of what has been simulated and how
+        simP_fromH5(simFiles, "${outputSim}")
+        simPfiles = simP_fromH5.out // value, seed, param.txt -> this will be used to get simulated proproportional params
+        //simPfiles.view()
+        
     
-    // combine seeds to each value 
-    val_seed = starting_pars.out.combine( seeds )
-    // store simulations characteristics - input of sun_simulations
-    // tuple val(value_oi), path(simCsv), val(seed_oi), val(grmv), val(cagev), val(damv), val(sexv), val(pop), val(npheno), val(model), val(ncages), val(subv), val(nas), val(orphenov) 
-    sim_char = val_seed.map{ [it[0], 
-                              it[1], 
-                              it[2], 
-                              params.GRMV, 
-                              params.CAGEV, 
-                              params.DAMV,
-                              params.SEXV,
-                              params.POP, 
-                              params.NPHENO, 
-                              simMode, 
-                              params.NCAGES, 
-                              params.SUBV, 
-                              params.NAs, 
-                              params.ORPHENOV ]
-                           } 
+        // ------ 4. creating file with combinations of pairs, this is one time only - can put in "set" directory
+        // creating list of number of rows - 1 row, 1 VD run
+        if (vdMode=="uni" || vdMode=="sex"){
+          // based on the number of phenos for univariate: 1 row 1 pheno
+          rows = nphenos.toInteger()
+                        .flatMap { value -> 
+                                  (1..value).collect { i -> [ i, null ] }
+                  }
+                  // //value -> (1..value) }
+        }else if (vdMode=="bi"){
+          // based on combins_file (i.e. create_combin.out) in bivariate: 1 row 1 line (i.e. 1 pair)
+          create_combin(nphenos) 
+          rows = create_combin.out.flatMap { file -> 
+                                          //def sampleName = file.baseName.toString().replace("combins_", "")
+                                          // Read the file and enumerate the lines
+                                          def lines = file.readLines()
+                                          def lineNumbers = (1..lines.size()).toList()
     
-    // ------ 2. run simulations 
-    run_simulations("${params.original_H5}", sim_char, "${outputSim}")
-    simFiles = run_simulations.out // value, seed, sim_h5
-    //simFiles.view()
+                                          // Emit the enumerated line numbers and file name
+                                          return lineNumbers.collect { lineNumber -> [lineNumber, file]}
+                                        }
+        }
+    } else {
+      // NB: will have to do the files one by one for now 
+      simFiles = Channel.of( [params.V, params.SEED, file(params.sim_h5) ] )
 
-    // ------ 3. getting simulated parameters (this will have the proportionals as well) from h5 
-    //           another way to keep track of what has been simulated and how
-    simP_fromH5(simFiles, "${outputSim}")
-    simPfiles = simP_fromH5.out // value, seed, param.txt -> this will be used to get simulated proproportional params
-    //simPfiles.view()
-    
-
-    // ------ 4. creating file with combinations of pairs, this is one time only - can put in "set" directory
-    // creating list of number of rows - 1 row, 1 VD run
-    if (vdMode=="uni" || vdMode=="sex"){
-      // based on the number of phenos for univariate: 1 row 1 pheno
-      rows = nphenos.toInteger()
-                    .flatMap { value -> 
-                              (1..value).collect { i -> [ i, null ] }
-              }
-              // //value -> (1..value) }
-    }else if (vdMode=="bi"){
-      // based on combins_file (i.e. create_combin.out) in bivariate: 1 row 1 line (i.e. 1 pair)
-      create_combin(nphenos) 
-      rows = create_combin.out.flatMap { file -> 
-                                      //def sampleName = file.baseName.toString().replace("combins_", "")
-                                      // Read the file and enumerate the lines
-                                      def lines = file.readLines()
-                                      def lineNumbers = (1..lines.size()).toList()
-
-                                      // Emit the enumerated line numbers and file name
-                                      return lineNumbers.collect { lineNumber -> [lineNumber, file]}
-                                    }
+      rows = Channel.fromPath("${params.combin}")
+                           .flatMap{ file -> 
+                               //def sampleName = file.baseName.toString().replace("combins_", "")
+                               // Read the file and enumerate the lines
+                               def lines = file.readLines()
+                               def lineNumbers = (1..lines.size()).toList()
+                               // Emit the enumerated line numbers and file name
+                               return lineNumbers.collect { lineNumber -> [lineNumber, file]}
+        
+      }
     }
-
+      
+    
     // ------ 5. run variance decomposition analysis 
     // creating tuple data to input to run_expbivar - check in modules/run_VD/main.nf the order and the values
     // rows has: linenumber/pheno to analyse + combin_file 
@@ -105,7 +125,8 @@ workflow{
                        params.SUBV, 
                        vdMode, 
                        params.EFFECTS, 
-                       params.CORR_NULL ] }
+                       params.CORR_NULL,
+                       params.PERM ] }
     //data.view()
     // run process 
     // tuple val(row_num), val(combins_path), val(value_oi), val(seed_oi), path(sim_h5), val(pheno), val(covs), val(cage), val(dam), val(grm), val(sexv), val(subset), val(model), val(effects), val(corr0)

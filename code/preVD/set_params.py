@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 ##### SCRIPT TL,TR #####
 # Gets as input a file with some parameters, in .csv vertical format, i.e.:

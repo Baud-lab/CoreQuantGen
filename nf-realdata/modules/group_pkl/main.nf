@@ -1,4 +1,6 @@
 process group_pkl{
+    container "community.wave.seqera.io/library/python_pip_pandas:0a27509c7c11c41b"
+    
     cache false // so that it runs again when running failed tasks
     publishDir("${outputVD}/", mode: 'copy')
     tag{ trait1 }

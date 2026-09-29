@@ -1,6 +1,7 @@
 process txtToRdata{
     publishDir("${outputVD}/${value_oi}/${seed_oi}/${suboutVD}", mode: 'copy')
     cache false // cache false so that repeat every time - this is to make sure that it is done everytime that run the analysis
+    container "docker://tonnelene/r-simulations:1.0"
     
     input:
     val(outRdata)

@@ -1,7 +1,8 @@
 // STEP 1: set the var/covar that want to change
 //         modifying param of interest (params.P) with value(s) (params.V) - look at params.yaml 
 process starting_pars{
-
+    container "community.wave.seqera.io/library/python_pip_pandas:0a27509c7c11c41b"
+    
     input:
     path(or_pars)
     val(set_oi)

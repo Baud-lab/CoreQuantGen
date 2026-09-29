@@ -81,7 +81,7 @@ class DirIndirVD():
     #std_genos = True: standardize genotypes. used to calculate variance explained by SNP
     #SimplifNonIdableEnvs: defaults to False. When all groups are of equal size, non-genetic variance components are not identifiable. Can (but don't have to) turn SimplifNonIdableEnvs to True to report rho instead of individual environmental VCs. No STE yet on rho I think. genetic estimates will be valid no matter what.
 
-    def __init__(self, vc_init, vc_init_type , pheno = None, pheno_ID = None, covs = None, covs_ID = None, covariates_names = None, kinship_all = None, kinship_all_ID = None, cage_all = None, cage_all_ID = None, maternal_all = None, maternal_all_ID = None, independent_covs = True, DGE = False, IGE = False, IEE = False, cageEffect = False, maternalEffect = False, calc_ste = True, standardize_pheno = True, subset_IDs = None, subset_on_cage = False, std_genos = False, SimplifNonIdableEnvs = False, seed = None): 
+    def __init__(self, vc_init, vc_init_type , pheno = None, pheno_ID = None, covs = None, covs_ID = None, covariates_names = None, kinship_all = None, kinship_all_ID = None, cage_all = None, cage_all_ID = None, maternal_all = None, maternal_all_ID = None, independent_covs = True, DGE = False, IGE = False, IEE = False, cageEffect = False, maternalEffect = False, calc_ste = True, standardize_pheno = True, subset_IDs = None, subset_on_cage = False, std_genos = False, SimplifNonIdableEnvs = False, seed = None, permute = False): 
         # the purpose of the IEE argument is to specify whether IEE should be off when IGE are off. When IGE are on, IEE must be on and therefore IEE will be automatically set to True when IGE is True.
         if IGE:
             IEE = True
@@ -101,7 +101,7 @@ class DirIndirVD():
         self.parseNmore(pheno, pheno_ID, covs, covs_ID, covariates_names, kinship_all, kinship_all_ID, cage_all, cage_all_ID, maternal_all, maternal_all_ID, independent_covs, standardize_pheno, subset_IDs, cageEffect, maternalEffect, IEE, subset_on_cage, std_genos, bivariate)
 
         #2. define the genetic, environmental and cage covariance matrices
-        self.VD(DGE = DGE, IGE = IGE, IEE = IEE, cageEffect = cageEffect, maternalEffect = maternalEffect, vc_init = vc_init, vc_init_type = vc_init_type, SimplifNonIdableEnvs = SimplifNonIdableEnvs, bivariate = bivariate)
+        self.VD(DGE = DGE, IGE = IGE, IEE = IEE, cageEffect = cageEffect, maternalEffect = maternalEffect, vc_init = vc_init, vc_init_type = vc_init_type, SimplifNonIdableEnvs = SimplifNonIdableEnvs, bivariate = bivariate, permute=permute, seed=seed)
 
         #3. optimize to estimate the variance components
         self.optimize(vc_init = vc_init,  vc_init_type = vc_init_type, bivariate = bivariate)
@@ -574,7 +574,7 @@ class DirIndirVD():
         self.Iok_pot2N = Iok_pot2N # N or 2N
 
 
-    def VD(self, DGE, IGE, IEE, cageEffect,maternalEffect,vc_init, vc_init_type, SimplifNonIdableEnvs, bivariate):
+    def VD(self, DGE, IGE, IEE, cageEffect,maternalEffect,vc_init, vc_init_type, SimplifNonIdableEnvs, bivariate, permute, seed):
 
         """ defines covariance for variance decomposition."""
 
@@ -590,28 +590,30 @@ class DirIndirVD():
         # Z is N focal x N_all and has 0s in cells Z_i,i (i.e. an animal is not its own cage mate)
         if IEE:
           
-            ############ SCRAMBLING - uncomment that section
-            #print('scrambling')
-            #print(self.cage_all)
-            #pdb.set_trace()
-            #cage_all_copy = self.cage_all.copy()
-            #np.random.seed(seed)
-            #scrambled_cage_all = np.random.choice(cage_all_copy, size=len(cage_all_copy), replace=False) #its names will be self.sampleID_all
-            #print(scrambled_cage_all)
-            #idxs = np.array([np.where(self.sampleID_all==self.pheno_ID[i])[0][0] for i in range(self.pheno_ID.shape[0])]) 
-            #scrambled_cage=scrambled_cage_all[idxs]
-            #same_cage = 1. * (scrambled_cage[:,np.newaxis]==scrambled_cage_all) # self.cage.shape = (N, 1); self.cage_all.shape = (N,); same_cage.shape = (N,N)
-            #diff_inds = 1. * (self.pheno_ID[:,np.newaxis]!=self.sampleID_all) # self.pheno_ID.shape = (N,); self.sampleID_all.shape = (N,); diff_inds.shape = (N, N)
-            #Z = same_cage * diff_inds 
+            ############ SCRAMBLING for cage permutation - uncomment that section
+            if permute:
+                print('scrambling with seed: ', seed)
+                print(self.cage_all)
+                #pdb.set_trace()
+                cage_all_copy = self.cage_all.copy()
+                np.random.seed(seed)
+                scrambled_cage_all = np.random.choice(cage_all_copy, size=len(cage_all_copy), replace=False) #its names will be self.sampleID_all
+                print(scrambled_cage_all)
+                idxs = np.array([np.where(self.sampleID_all==self.pheno_ID[i])[0][0] for i in range(self.pheno_ID.shape[0])]) 
+                scrambled_cage=scrambled_cage_all[idxs]
+                same_cage = 1. * (scrambled_cage[:,np.newaxis]==scrambled_cage_all) # self.cage.shape = (N, 1); self.cage_all.shape = (N,); same_cage.shape = (N,N)
+                diff_inds = 1. * (self.pheno_ID[:,np.newaxis]!=self.sampleID_all) # self.pheno_ID.shape = (N,); self.sampleID_all.shape = (N,); diff_inds.shape = (N, N)
+                Z = same_cage * diff_inds 
             ############ END OF SCRAMBLING
  
-            # if scrambling, comment out the 3 lines below
+            # if scrambling (permuations), comment out the 3 lines below
             #     #transform boolean to float. shape of same_cage is len(self.cage) x len(self.cage_all)
             #     #same_cage and diff_inds are (N_a, N_a) and Z is (N, N_a) and no necessary relationship between the two axes. Still Zi_i (wherever that is) should be 0 and Zi_j should be 1 if i and j are in the same cage
-            same_cage = 1. * (self.cage==self.cage_all) # self.cage.shape = (N, 1); self.cage_all.shape = (N,); same_cage.shape = (N,N)
-            diff_inds = 1. * (self.pheno_ID[:,np.newaxis]!=self.sampleID_all) # self.pheno_ID.shape = (N,); self.sampleID_all.shape = (N,); diff_inds.shape = (N, N)
-            Z = same_cage * diff_inds 
-            
+            else:
+                same_cage = 1. * (self.cage==self.cage_all) # self.cage.shape = (N, 1); self.cage_all.shape = (N,); same_cage.shape = (N,N)
+                diff_inds = 1. * (self.pheno_ID[:,np.newaxis]!=self.sampleID_all) # self.pheno_ID.shape = (N,); self.sampleID_all.shape = (N,); diff_inds.shape = (N, N)
+                Z = same_cage * diff_inds 
+            #pdb.set_trace()
             # To check if Z corresponds to (cage_density - 1): cage_density_minus1 = sum(Z); all( (self.cage_density[:int(self.cage_density.shape[0]/2),0] - cage_density_minus1) == 1)
             # in case pheno_ID have different order than sample_ID:  all( (np.sort(self.cage_density[:int(self.cage_density.shape[0]/2),0]) - np.sort(cage_density_minus1)) == 1) 
             #pdb.set_trace() # check before filtering with Iok

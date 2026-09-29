@@ -45,7 +45,9 @@ parser.add_argument('-m','--model', help='type of model: univariate (uni) or biv
 parser.add_argument('-e','--effects',help='effects - DGE,IGE,IEE,cageEffect,maternalEffect - to be included [default= None to all]', default=None)
 parser.add_argument('-s','--subset', help='to handle optional subset on individuals [default=None]', default=None)
 parser.add_argument('-z','--zero_one', help='which corr to set to 0 or 1, comma-separated as "corr_name,value_constrain", e.g. corr_Ad1d2,1 [default=None]', default=None)
-parser.add_argument('-C','--chrom', type = str, help = 'comma-separated string of chromosomes or list ')
+parser.add_argument('-C','--chrom', type = str, help = 'comma-separated string of chromosomes or list', default=None)
+parser.add_argument('-P','--permute', type = str, help = 'scrambling cages to ensure effect from cage mates is not random', default="no")
+
 
 args = vars(parser.parse_args())
 
@@ -205,6 +207,7 @@ if __name__=='__main__':
     analysis_type = args['analysis_type']
     assert analysis_type == 'VD' or analysis_type == 'null_covars_LOCO', 'set analysis_type argument to `VD` or `null_covars_LOCO`'
     assert not model == 'bi' or not model == 'sex' or not analysis_type == 'null_covars_LOCO', "can't generate LOCO variances with bivariate or sexvariate model yet"
+    
  
     #-----------------------------------------------------------------#
     #      A7. DEFINE list of chromosomes (if null_covars...)  
@@ -229,6 +232,16 @@ if __name__=='__main__':
     #sid=500 # to test specific #TODO: change this to above!
     print('initial seed set is:', sid)
     
+    #-----------------------------------------------------------------#
+    #             A8. DEFINE IF IN PERMUTATION MODE
+    #-----------------------------------------------------------------#
+    assert args['permute'] == "no" or args['permute'] == "yes", "permute needs to be 'yes' or 'no'"
+    if args['permute'] == "no":
+        permute = False
+        perm_name = None
+    elif args['permute'] == "yes":
+        permute = True
+        perm_name = "".join(["perm", str(sid)])
     
     ################################################################
     ###########   B. PARSING INPUT AND DEFINING OUTPUT   ###########
@@ -290,12 +303,13 @@ if __name__=='__main__':
         
         ### Generating file name  ###    NB: in VD depends on trait1, trait2 and corr0 - if any; in null_covars_LOCO depends on chr!!! 
         #VD_outfile_pickle="".join([VD_outfile_dir,"_".join(filter(None, [trait1,trait2])),".pkl"]) 
-        
-        corr0 = parse_None(args['zero_one']).split(",")[0] 
-        constr = int(parse_None(args['zero_one']).split(",")[1])
+        corr0 = parse_None(args['zero_one'])
+        if corr0 is not None:
+            corr0 = args['zero_one'].split(",")[0] 
+            constr = int(args['zero_one'].split(",")[1])
         #if corr0 is None:
         #if True: # this happens anyways # TOREMOVE: comment the if True and move back of one indent
-        VD_outfile_name="".join([outfile_dir,"_".join(filter(None, [trait1,trait2]))]) 
+        VD_outfile_name="".join([outfile_dir,"_".join(filter(None, [trait1,trait2, perm_name]))]) 
         #VD_outfile_pickle="".join([VD_outfile_name, "_VC.pkl"])
         VD_outfile_pickle="".join([VD_outfile_name, "_VC.pkl.gz"])
         
@@ -336,7 +350,7 @@ if __name__=='__main__':
                 # Running DirIndirVD, i.e. fitting of the model
                 vc = DirIndirVD(pheno = doto['pheno'], pheno_ID = doto['pheno_ID'], covs = doto['covs'], covs_ID = doto['covs_ID'], covariates_names = doto['covariates_names'], kinship_all = doto['kinship_full'], kinship_all_ID = doto['kinship_full_ID'],  cage_all = doto['cage_full'], cage_all_ID = doto['cage_full_ID'], maternal_all = doto['maternal_full'], maternal_all_ID = doto['maternal_full_ID'], subset_IDs = doto['subset_IDs'], 
                                 DGE = (DGE is not None), IGE = (IGE is not None), IEE = (IEE is not None), cageEffect = (cageEffect is not None), maternalEffect = (maternalEffect is not None), 
-                                calc_ste=calc_ste_VD, subset_on_cage = False, SimplifNonIdableEnvs = False, vc_init_type = None, vc_init = None, seed = sid, standardize_pheno = standardize_pheno_VD) #standardize_pheno = True) #standardize_pheno = False) 
+                                calc_ste=calc_ste_VD, subset_on_cage = False, SimplifNonIdableEnvs = False, vc_init_type = None, vc_init = None, seed = sid, standardize_pheno = standardize_pheno_VD, permute = permute) #standardize_pheno = True) #standardize_pheno = False) 
                 # line that Amelie is using # difference standardize_pheno = False # TOREMOVE once checked is ok
                 dirIndir_out = vc.getOutput() # getting output
                 vc_covs = vc.getDirIndirVCinit() # getting covariance matrices used in vc_init
@@ -423,7 +437,7 @@ if __name__=='__main__':
                 vc_lr = DirIndirVD(pheno = doto['pheno'], pheno_ID = doto['pheno_ID'], covs = doto['covs'], covs_ID = doto['covs_ID'], covariates_names = doto['covariates_names'], kinship_all = doto['kinship_full'], kinship_all_ID = doto['kinship_full_ID'],  
                                    cage_all = doto['cage_full'], cage_all_ID = doto['cage_full_ID'], maternal_all = doto['maternal_full'], maternal_all_ID = doto['maternal_full_ID'], subset_IDs = doto['subset_IDs'],
                                    DGE = (DGE is not None), IGE = (IGE is not None), IEE = (IEE is not None), cageEffect = (cageEffect is not None), maternalEffect = (maternalEffect is not None), 
-                                   calc_ste=calc_ste_VD, subset_on_cage = False, SimplifNonIdableEnvs = False, vc_init_type = my_vc_init_type, vc_init = my_vc_init, seed = sid, standardize_pheno = standardize_pheno_VD)
+                                   calc_ste=calc_ste_VD, subset_on_cage = False, SimplifNonIdableEnvs = False, vc_init_type = my_vc_init_type, vc_init = my_vc_init, seed = sid, standardize_pheno = standardize_pheno_VD, permute=permute)
                 dirIndir_out_lr = vc_lr.getOutput() 
                 
                 try_nb_VD = try_nb_VD + 1
@@ -607,7 +621,7 @@ if __name__=='__main__':
 
                 vc = DirIndirVD(pheno = doto['pheno'], pheno_ID = doto['pheno_ID'], covs = doto['covs'], covs_ID = doto['covs_ID'], covariates_names = doto['covariates_names'], kinship_all = doto['kinship_full'], kinship_all_ID = doto['kinship_full_ID'],  cage_all = doto['cage_full'], cage_all_ID = doto['cage_full_ID'], maternal_all = doto['maternal_full'], maternal_all_ID = doto['maternal_full_ID'], subset_IDs = doto['subset_IDs'], 
                                 DGE = (DGE is not None), IGE = (IGE is not None), IEE = (IEE is not None), cageEffect = (cageEffect is not None), maternalEffect = (maternalEffect is not None), 
-                                calc_ste=False, subset_on_cage = False, SimplifNonIdableEnvs = False, vc_init_type = None, vc_init = None, seed = sid, standardize_pheno = True)
+                                calc_ste=False, subset_on_cage = False, SimplifNonIdableEnvs = False, vc_init_type = None, vc_init = None, seed = sid, standardize_pheno = True, permute=permute)
                 dirIndir_out = vc.getOutput()
                 
                 try_nb_VD = try_nb_VD + 1

@@ -2,8 +2,8 @@
 test*/
 output/
 # input files
-input/
 params/ 
+start_params*
 # scripts to submit
 submit*
 

@@ -13,7 +13,6 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
   - `['matrix']`; 
   - `['row_header']['sample_ID']`
 
-<br/>
 
 ### 2. **`cages/`**
 2.1. subgroup: *`<cage_subgroup>/`* (e.g. "real") <br/>

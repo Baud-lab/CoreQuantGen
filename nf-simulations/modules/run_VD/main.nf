@@ -9,7 +9,7 @@ process run_VD{
   }
 
   time {
-    def base = [uni: 1.h, bi: 10.h, sex: 2.h][params.vdMODEL] ?: 1.h
+    def base = [uni: 1.h, bi: params.bitime, sex: 2.h][params.vdMODEL] ?: 1.h
     (base * task.attempt)
   }
   

@@ -5,7 +5,7 @@ process run_VD{
   tag{ "$trait1-$row_num" }
 
   memory {
-    (params.vdMODEL == 'bi' ? 6.GB : 3.GB)
+    (params.vdMODEL == 'bi' ? 4.GB : 3.GB)
   }
 
   time {

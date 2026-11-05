@@ -5,9 +5,6 @@
 ###########################################################################
 
 ### Get function to prepare results, colest and colste --> change them there if change them in exp_bivar
-##suppressMessages(library("here"))
-##source(here("./code/afterVD/Rfun", "prepare_res.R"))
-
 suppressMessages(library("optparse"))
 
 option_list = list(make_option("--est", action="store", default=NA, type='character'

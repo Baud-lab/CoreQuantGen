@@ -31,10 +31,10 @@ all_snps = all_snps[order(all_snps$logP, decreasing = T),]
 
 
 # saving objects for plotting
-#save(all_snps, all_ld, file = "source_files/fig4.RData")
+#save(all_snps, all_ld, file = "figN.RData")
 
 # loading objects from source for plotting
-#load(file = "source_files/fig4.RData")
+#load(file = "figN.RData")
 
 # Function to plot manhattan
 draw_manhattan_plot=function(dat, def.cex = 0.4, sig.cex = 2, cex.x=1.25, cex.y=1.25, cex.lab=1.4) {

@@ -1,5 +1,5 @@
 process run_VD{
-  container "docker://tonnelene/py_corequantgen:1.1"
+  container "tonnelene/py_corequantgen:1.1"
   fair true // goes in order
   publishDir("$outputVD/$trait1")
   tag{ "$trait1-$row_num" }

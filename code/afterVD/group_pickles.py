@@ -13,13 +13,6 @@ parser.add_argument('-o','--output', help = 'path to output result, ending in .p
 args = vars(parser.parse_args())
 
 # Directory containing your pickle files
-#main_dir = Path("/users/abaud/htonnele/git/me/core_VD/code/pysrc/test/VD/bivariate/noBatch_20cages/pruned_dosages_include_DGE_IGE_IEE_cageEffect/")
-#pattern = "*.pkl.gz"
-
-# Recursively find all matching files
-#files = [str(path) for path in main_dir.rglob(pattern)]
-
-#files = args['input'].split(",")
 
 # Open the file in read mode
 with open(args['input'], "r") as f:
@@ -41,7 +34,6 @@ for f in files:
         all_pickles[Path(f).name] = data
 
 # Save the combined dictionary to a new pickle file
-#output_file = "/users/abaud/htonnele/git/me/core_VD/code/pysrc/test/VD/bivariate/noBatch_20cages/pruned_dosages_include_DGE_IGE_IEE_cageEffect_all.pkl.gz"  # Name of the output file
 output_file = args['output']
 with gzip.open(output_file, "wb") as f:
      pickle.dump(all_pickles, f)

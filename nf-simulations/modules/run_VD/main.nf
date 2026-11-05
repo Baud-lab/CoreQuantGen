@@ -2,7 +2,7 @@ process run_VD{
   cache params.CACHE_VD
   fair true // goes in order
   tag{ "pheno_pair:$row_num;value:$value_oi;seed:$seed_oi" }
-  container "docker://tonnelene/py_corequantgen:1.1"
+  container "tonnelene/py_corequantgen:1.1"
   
   memory {
     (params.vdMODEL == 'bi' ? 4.GB : 3.GB)

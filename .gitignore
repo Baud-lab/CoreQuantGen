@@ -6,6 +6,7 @@ params/
 start_params*
 # scripts to submit
 submit*
+simulations_protocol.md
 
 # folder and cache related to python runs
 code/VD/classes/__pycache__/

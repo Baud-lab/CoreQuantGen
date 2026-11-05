@@ -6,7 +6,8 @@ process VCF_TO_PLINK {
     container "https://depot.galaxyproject.org/singularity/plink:1.90b6.21--h7b50bb2_6" // plink 1.9
 
     input:
-    tuple val(meta), path(vcf), path(ind_keep)
+    tuple val(meta), path(vcf), path(tbi) 
+    //tuple val(meta), path(vcf), path(ind_keep) // this goes with --keep below
 
     output:
     tuple val(meta), path("${prefix}.bed"), path("${prefix}.bim"), path("${prefix}.fam"), emit: genotypes
@@ -22,8 +23,8 @@ process VCF_TO_PLINK {
       --set-missing-var-ids @:# \
       --real-ref-alleles \
       --keep-allele-order \
-      --keep ${ind_keep}
       --out ${prefix}
     # zcat ${vcf} | grep -v '#' | cut -f 1,2,4,5 | tr ' ' '\t' > ${meta.id}_chrALL_pos_alleles.tsv
+    #  --keep ${ind_keep}
     """
 }

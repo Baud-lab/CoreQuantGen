@@ -179,7 +179,7 @@ workflow{
     txtToRdata("${out_prefx}_estNste.Rdata", estNste_txt.map{it[0,1,3,4]}, params.CORR_NULL, "${outputVD}", "${suboutVD}")
     //alltxt_toRdata.out.view()
     estNste = simFiles.combine(txtToRdata.out, by:[0,1])
-    estNste.view()
+    estNste.view{ "RData output: $it" }
     //}else{
     //  simFiles.view()
     //}

@@ -5,7 +5,7 @@ skip_simulations: false
 original_H5:     "" # path to original data h5 file 
 original_params: "" # path to starting parameter file
 output_folder:   "" # path to main output folder, e.g. ./simHSmice/
-pipeline_info:   "" # path to folder to store pipeline info, trace, timeline... htmls
+#pipeline_info:   # path to folder to store pipeline info, trace, timeline... htmls
 # if skip_simulations is True:
 sim_h5:
 combin:

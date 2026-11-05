@@ -53,11 +53,10 @@ workflow{
                             vdMode, 
                             params.EFFECTS, 
                             params.CORR_NULL ] } 
-    data.view()
-    // TODO: have to check work of CORR_NULL here
+    data.view { "run_VD input: $it" }
 
     // run process 
-    if (vdMode == "uni" || vdMode == "sex"){ // TODO: need to check this
+    if (vdMode == "uni" || vdMode == "sex"){ 
       run_VD_uni(data, "./*/*/*/*/", "${outputVD}") 
       out_est = run_VD_uni.out.est.groupTuple()      
       out_STE = run_VD_uni.out.STE.groupTuple()
@@ -73,7 +72,6 @@ workflow{
     
     
     // ------ 2. gathering results for one phenotype all together ------//
-    // TODO: have to check work of CORR_NULL here
     corr_null_name = "${params.CORR_NULL}".replaceAll(/,1$/, '_one').replaceAll(/,0$/, '_zero')
 
     concat_est("all_est.txt", out_est, corr_null_name, "${outputVD}") 
@@ -91,7 +89,7 @@ workflow{
     /*    - saving as Rdata - 1 object called "VCs"
     */
     txtToRdata("estNste.Rdata", estNste_txt, params.SWAPtraits, "${outputVD}") 
-    txtToRdata.out.view()
+    txtToRdata.out.view{ "RData output: $it" }
 
     // D. grouping pkl files in a single one 
     group_pkl("VC.pkl.gz", out_pkl, "${outputVD}") 

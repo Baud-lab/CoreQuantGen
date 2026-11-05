@@ -56,7 +56,7 @@ pwd
 
 echo "launching nextflow run"
 nextflow run -ansi-log false main.nf \
-             -profile crg \
+             -profile singularity,crg \
              -c nextflow.config -params-file $PARFILE \
              -w <scratch_dir>/nf_workdir/CoreQuantGen/realdata/work_<POP>/ \
              -with-trace -resume > log/VD_<POP>_${mydate}.log & pid=$!

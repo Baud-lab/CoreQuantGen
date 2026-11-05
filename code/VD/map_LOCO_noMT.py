@@ -44,21 +44,6 @@ parser.add_argument('-s','--subset', help='to handle optional subset on individu
 
 
 args = vars(parser.parse_args())
-#args['input'] 
-#args['phenos_v'] # e.g. phenos_version
-#args['covs_v'] 
-#args['cage_v'] 
-#args['dam_v'] 
-#args['grm_v'] 
-#args['snp_v'] 
-#args['covarDir']
-#
-#args['subset']
-#args['model']
-#args['pheno']
-#args['effects']
-#args['chrom'] 
-#args['out']
 #-------------------------#
 #  II. IMPORTING MODULES
 #-------------------------#	 
@@ -67,9 +52,7 @@ import sys
 import os
 import h5py
 import numpy as np
-#sys.path.insert(0,'/users/abaud/abaud/P50_HSrats/code/variance_decomposition/felipes_deblur/VDessential_wBivarPvalues/pysrc/')
 from classes.social_data import SocialData # if modifying this file, always update the latest version as
-#sys.path.insert(0,'/users/abaud/abaud/CFW/code/reproduce/LIMIX')
 # runs GWAS without estimating the covariance structure: uses the total covariance matrix provided (built from DGE SGE DEE SEE and cage effects)
 import pdb
 import copy
@@ -88,7 +71,6 @@ if __name__=='__main__':
     #---------------------------------------------------------#
     #	       A1. VERSIONS FOR INPUT FILE = *.h5 file		  
     #---------------------------------------------------------#
-    #in_file = '/users/abaud/abaud/P50_HSrats/data/P50_rats_Rn7_Helene.h5'
     in_file=args['input'] # input file name
     # first fetch trait name
     #task = 'deblur_counts'
@@ -276,14 +258,13 @@ if __name__=='__main__':
     if out_dir is None:
         out_dir = os.getcwd()
         
-    if model == "bi": #e.g. out_dir = "/users/abaud/htonnele/CFW/output/" "pvalues_LOCO/univariate/dosages_pruned/noBatch/dosages_pruned_{effs}/"
-        sys.exit("can't do GWAS bivariate yet")
-        # TODO: have to check the one below
+    if model == "bi": #e.g. out_dir = ./pvalues_LOCO/univariate/dosages_pruned/noBatch/dosages_pruned_{effs}/"
+        sys.exit("can't do GWAS bivariate")
+        # in case do bivariate: have to check the one below when 
         #pvalues_file_dir = "".join([out_dir,"/pvalues_LOCO/",model,"variate/",genotypes_version,"/",phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, cageEffect, maternalEffect])),'/',trait1,'/'])
-    elif model == "uni": # TODO: insert some 
+    elif model == "uni": 
         #pdb.set_trace()
         pvalues_file_dir = "".join([out_dir,"/pvalues_LOCO/",model,"variate/",".".join(filter(None,['',direct_version,social_version])),"/",phenos_version,"/",gwas,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, IEE, cageEffect, maternalEffect])),'/'])
-        #pvalues_file_dir = "".join(['/users/abaud/abaud/P50_HSrats/output/pvalues_LOCO_unpruned/',task,"/",kinship_type,"_","_".join(filter(None, [subset, DGE, IGE, IEE, cageEffect,maternalEffect]))])
     if not os.path.exists(pvalues_file_dir):
         os.makedirs(pvalues_file_dir, exist_ok=True)
     pvalues_file_name = "".join([pvalues_file_dir,'/',trait1,'.h5'])
@@ -291,24 +272,10 @@ if __name__=='__main__':
         print("".join(["file ", pvalues_file_name, " already exists, exiting"]))
         sys.exit(0)
         
-    ##try opening pvalues file early so that lmm doesnt run if file opening is going to fail...
-    #pvalues_file_dir = "".join(['/users/abaud/abaud/P50_HSrats/output/pvalues_LOCO_unpruned/',task,"/",kinship_type,"_","_".join(filter(None, [subset, DGE, IGE, IEE, cageEffect,maternalEffect]))])
-    #if not os.path.exists(pvalues_file_dir):
-    #    os.makedirs(pvalues_file_dir, exist_ok=True)
-    #pvalues_file_name = "".join([pvalues_file_dir,'/',trait,'.h5'])
-    ##if os.path.exists(pvalues_file_name):
-    ##   sys.exit(0)
-    #pvalues_file = h5py.File(pvalues_file_name,'w')
-    
     #e.g. covar_mainDir = "test/null_covars_LOCO/"
     covar_dir = "".join([covar_mainDir,"/",model,"variate/",phenos_version,"/",GRM_version,"_","_".join(filter(None, ['',subset, DGE, IGE, IEE, cageEffect, maternalEffect])),'/',trait1])
     if not os.path.exists(pvalues_file_dir):
         sys.exit("cannot find covar dir " + covar_dir)
-    
-    #covar_outfile_dir = "".join(["/users/abaud/abaud/P50_HSrats/output/null_covars_LOCO/",task,"/",kinship_type,"_","_".join(filter(None, [subset, DGE, IGE, IEE, cageEffect,maternalEffect]))])
-    
-    #genotype_file_name = '/users/abaud/abaud/P50_HSrats/data/P50_rats_Rn7.h5' # this became that is in in_file
-    #genotype_file = h5py.File(genotype_file_name,'r')
     
     #will define one LMM per chr as covar changes for each cov
     #chrs = list(range(1,21))

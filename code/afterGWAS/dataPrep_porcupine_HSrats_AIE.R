@@ -14,7 +14,6 @@ outplot = "snps_QTLs_toplot.RData"
 outqtls = "top_QTLs.tsv"
 
 # Loading 'unpruned_bug_QTLs'
-# for porcupine plot for individual cohorts (Fig 4):
 objs = load(qtl_file); objs # loading all_qtls, missing, res (which is snps)
 top_qtls = all_qtls[all_qtls$logP > 5.8, ]
 pheno_names = unique(top_qtls$measure)

@@ -49,14 +49,16 @@ workflow {
           vcf, individ_file
         )
     
-        // 2. Run subset vcf 
+        // 2. Run subset vcf
         // this is only if you want to keep a subset of vcf, 
         // not needed if you work with plink in general and might be comput expensive to keep big vcf + plink
+        // TODO: have to see if to do like this or like below converting to plink directly??
         SUBSET_VCF(
             VCF_MISSING.out.keep
         )
         // view output
         SUBSET_VCF.out.view()
+        
         // 3. Convert subsetted VCF to PLINK bed/bim/fam
         VCF_TO_PLINK(
            SUBSET_VCF.out // this has the vcf and list of individuals to keep

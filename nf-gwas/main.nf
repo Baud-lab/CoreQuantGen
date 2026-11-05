@@ -4,44 +4,6 @@ include { GET_PHENOS }  from './modules/get_phenos/main.nf'
 include { NULL_COVAR }  from './modules/null_covar/main.nf'
 include { MAP_LOCO   }  from './modules/map_loco/main.nf'
 
-/*
- * Required params
- */
-
-// params.h5       = "/users/abaud/htonnele/PRJs/P50_HSrats/microbiome_ht/output/microb_prep/h5files/HSrats_AIE_NY.h5"
-// params.outdir   = "/users/abaud/htonnele/git/me/GWAS/test_HSrats"
-// 
-// params.phenov = "sgb_cecal"
-// params.covsv  = "None"
-// params.cagev  = "all657"
-// params.grmv   = "round10_2"
-// params.damv   = "mother_name"
-// params.subset = "NY"
-// params.effects    = "DGE,cageEffect,maternalEffect"
-// 
-// params.dsnpv = "round10_2_direct"
-// params.gwas  = "dGWAS"
-
-// /*
-//  * Can be phenotype names or phenotype column numbers.
-//  *
-//  * Examples:
-//  *   --phenotypes 216
-//  *   --phenotypes 216,217,218
-//  *   --phenotypes trait_a,trait_b
-//  */
-// params.phenotypes = "216"
-// 
-// /*
-//  * Chromosomes needed for null covariates and then passed as a list to map_loco.
-//  *
-//  * Example:
-//  *   --chromosomes 1,2,3,4,5,6,7,8,9,10
-//  */
-// params.chromosomes = "10"
-// 
-//params.pheno_list = null // if null, execute module to get one - easy R code, reading h5, taking col names and output pheno_list 
-
 
 workflow {
     // Define channel for input h5 file
@@ -164,6 +126,7 @@ workflow {
     //ch_null_covars_by_trait.view()
 
     // // Gather all null-covar H5 files for one trait into one directory
+    // not used now but might be useful in future
     // GROUP_NULL_COVARS(ch_null_covars_by_trait)
     // GROUP_NULL_COVARS.out.dir.view()
 

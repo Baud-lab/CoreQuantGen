@@ -1,15 +1,10 @@
 #!/usr/bin/env Rscript
-## suppressMessages(library("here"))
-## source(here("./code/preVD/Rfun", "simulations.R"))
 
-# TODO:
-# The dam for MATERNAL EFFECT comes from by a random metadata with 6000 rows; file path hardcoded in the script 
-# -> should improve this
-#BiocManager::install("rhdf5", update=FALSE, ask=FALSE)
+# NB: if the input h5 has no 'dam/' group (dam_version = "None"), dams are simulated:
+#     individuals are assigned at random to dams of size --n_per_dam (see option below)
 
 suppressMessages(library("MASS"))
 suppressMessages(library("rhdf5"))
-#suppressMessages(library("hdf5r"))
 suppressMessages(library("optparse"))
 suppressMessages(library("matrixcalc"))
 
@@ -51,6 +46,8 @@ option_list = list(make_option("--in_file", action="store", default=NA, type='ch
                    
                    make_option("--phenos", action="store", default=2, type='integer',
                                help="Number of phenotypes that want to simulate per each type of model, DGE, IGE or noise [default= %default]"),
+                   make_option("--n_per_dam", action="store", default=4, type='integer',
+                               help="Only used when --dam_version is None: number of individuals per simulated dam (dams are assigned at random, independently of GRM and cages) [default= %default]"),
                    make_option("--seed", action="store", default=5, type='integer',
                                help="A random number to change starting point of randomization [default= %default]"),
                    make_option("--subset", action="store", default=-1, type='double',
@@ -760,7 +757,6 @@ nb_cages_to_keep = opt$subset
 h5 = h5read(HShdf,"/")
 
 #---- LOADING GRM ----
-# load(file.path(datadir, "HSmice_kinship.RData")); GRM = kin
 cat("Loading GRM", "\n")
 GRM = h5$GRM[[GRM_version]]$matrix
 colnames(GRM) = rownames(GRM) = h5$GRM[[GRM_version]]$row_header$sample_ID
@@ -790,12 +786,13 @@ if(dam_version != "None"){
   dam <- dam[rownames(GRM)]
   #str(dam)
 }else{
-  cat("Creating maternal matrix", "\n")
-  metadata_file="/users/abaud/htonnele/PRJs/outputs/test_maternal/input/metadata_16S.txt" #TODO: change this one if want to, it is used to create 'dam'
-  metadata <- read.csv(metadata_file, sep="\t", quote = '"')
-  #dam <- sample(na.omit(metadata$dam), nrow(GRM), replace =T)
-  dam <- na.omit(metadata$dam)[1:nrow(GRM)]
-  #dam <- metadata$dam[1:nrow(GRM)] # having NA gives a problem later on
+  n_per_dam <- opt$n_per_dam
+  if(is.na(n_per_dam) || n_per_dam < 1){stop("--n_per_dam must be a positive integer")}
+  cat("Simulating dams:", n_per_dam, "individuals per dam", "\n")
+  set.seed(opt$seed) # reproducible dam assignment; seed is set again before cage subsetting below
+  n_ind  <- nrow(GRM)
+  n_dams <- ceiling(n_ind / n_per_dam)
+  dam <- sample(rep(paste0("SD", seq_len(n_dams)), length.out = n_ind))
   names(dam) <- rownames(GRM)
   dam_version = "simulated"
 }
@@ -1062,7 +1059,6 @@ times <- sim$times
 #sim_types = paste0(substr(unique(unlist(sapply(strsplit(colnames(all_sims),"_"), "[", 2))), 1,1), collapse = "")
 #sim_types
 nb_cages = ncol(W) # dim(W)
-#fid=file.path(outdir, paste0("HSmice_",ncol(phenos),model,"_",nb_cages,"cages","_seed",seed,".h5"))
 fid=file.path(outdir, paste0(opt$prefix,"_", ncol(phenos), model,"_", nb_cages,"cages","_seed",seed,".h5"))
 #fid
 cat("Saving files to ", fid, "\n")
@@ -1096,10 +1092,6 @@ h5write(obj=colnames(phenos), file=fid, name="phenotypes/mockphenos/col_header/p
 # Phenotype matrix
 h5write(obj=phenos,file=fid,name="phenotypes/mockphenos/matrix")
 
-## reading phenos
-# fid = "/users/abaud/htonnele/HSmice/output/simulations/bivariate/sub100/D1t1/IG1_IG2/0.35/HSmice_bi_100IGE_100cages_seed40.h5"
-# h5 = h5read(fid,"/")
-# phenos= h5$simulations$matrix; colnames(phenos) <- h5$simulations$col_header$phenotype_ID; rownames(phenos) <- h5$simulations$row_header$sample_ID
 
 ######## 1b. subset - if any # # to be saved in format:  self.subset_IDs = f['subsets'][self.subset].asstr()[:]
 if (sub_version != "None"){

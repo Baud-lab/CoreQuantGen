@@ -13,7 +13,6 @@ outqtls = file.path(outdir, paste0("sgb_cecal_QTLs_a",alpha,"_unpruned.tsv"))
 
 # Getting all files, one per phenotype
 files = list.files(pval_dir, pattern = ".h5", full.names = T)
-#file = files[367] # Paraprevotella associated
 length(files)
 names(files) = gsub(".h5","",basename(files), fixed = T)
 head(files)  
@@ -67,8 +66,7 @@ get_snps = function(file, chrs=1:20, logp_thr = 3){
   # adding id and logP columns
   all_snps[,"id"] = paste(all_snps[,"chr"], all_snps[,"pos"], sep="_")
   dim(all_snps)
-  #[1] 4880609       4 # for P50_Rn7_unpruned, corresponds to wc -l of chr 1:20 in /users/abaud/data/secondary/P50_HSrats/dosages/P50_Rn7_unpruned_perChr/
-  
+
   # handle missing (-999) P values
   missing_chrs = unique(na.omit(all_snps[all_snps[,"pvalue"] == (-999),'chr']))
   if (all(all_snps[,"chr"] %in% missing_chrs)) {

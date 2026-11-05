@@ -12,11 +12,11 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# CRAN packages: MASS ships with base R already, but pinning it here is harmless
-RUN Rscript -e 'install.packages(c("optparse", "matrixcalc"), repos="https://cloud.r-project.org")'
+# CRAN packages: MASS ships with base R already; only optparse and matrixcalc are installed here
+RUN Rscript -e 'install.packages(c("optparse", "matrixcalc"))'
 
 # Bioconductor package: rhdf5 requires BiocManager, not install.packages()
-RUN Rscript -e 'install.packages("BiocManager", repos="https://cloud.r-project.org"); BiocManager::install("rhdf5", update=FALSE, ask=FALSE)'
+RUN Rscript -e 'install.packages("BiocManager"); BiocManager::install("rhdf5", update=FALSE, ask=FALSE)'
 
 # Quick sanity check baked into the build: fails the build immediately if anything didn't install
 RUN Rscript -e 'suppressMessages(library("MASS")); suppressMessages(library("rhdf5")); suppressMessages(library("optparse")); suppressMessages(library("matrixcalc")); cat("All packages loaded OK\n")'

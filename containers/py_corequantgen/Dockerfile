@@ -14,8 +14,6 @@ RUN apt-get update && apt-get install -y \
     coreutils \
     && rm -rf /var/lib/apt/lists/*
 
-#RUN command -v ps && ps --version
-
 # Keep packaging tools at versions that behave well with older packages
 RUN python -m pip install --no-cache-dir \
     pip==23.3.2 \

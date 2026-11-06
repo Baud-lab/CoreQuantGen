@@ -111,7 +111,7 @@ If you use this code please cite:
   *Genome Biol* 22, 216 (2021). https://doi.org/10.1186/s13059-021-02415-x
 - Tonnelé, H., Casale, F.P., Baud, A., Phenome-wide genetic framework to identify mechanisms of social effects, *bioRxiv* 2026.03.10.710784, https://doi.org/10.64898/2026.03.10.710784
 
-Software citation: [`CITATION.cff`](CITATION.cff) (Zenodo DOI [10.5281/zenodo.4965824](https://doi.org/10.5281/zenodo.4965824)).
+Software citation: [`CITATION.cff`](CITATION.cff) (Zenodo DOI [10.5281/zenodo.4965824](https://doi.org/10.5281/zenodo.4965824), release used for the 2025 paper).
 
 
 ## License

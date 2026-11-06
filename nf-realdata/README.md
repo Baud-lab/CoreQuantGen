@@ -6,7 +6,7 @@ in univariate, bivariate or sex-variate mode (see the [main README](../README.md
 ```mermaid
 flowchart LR
   h5[("input .h5<br/>phenotypes, covariates, GRM,<br/>cages, dam, sex, subsets")]
-  comb["combins_*.csv<br/>phenotype pairs<br/>(bivariate only)"]
+  comb[("combins_*.csv<br/>phenotype pairs<br/>(bivariate only)")]
   VD["run_VD<br/>covRunner.py<br/>one task per phenotype or pair"]
   CAT["concat_est / concat_STE"]
   RD["txtToRdata"]

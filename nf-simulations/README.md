@@ -11,7 +11,7 @@ flowchart LR
   SIM["run_simulations<br/>run_simulations.R<br/>one task per value x seed"]
   SIMP["simP_fromH5"]
   CC["create_combin<br/>(bivariate only)"]
-  skip["sim_h5 + combin<br/>(skip_simulations: true)"]
+  skip[("sim_h5 + combin<br/>(skip_simulations: true)")]
   VD["run_VD -> concat -> txtToRdata, group_pkl<br/>same steps as nf-realdata"]
   simh5[/"simulated .h5"/]
   o0[/"params_*.txt<br/>simulated parameters"/]

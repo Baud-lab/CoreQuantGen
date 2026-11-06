@@ -22,9 +22,7 @@ _term() {
 
 trap _term TERM
 
-# load Java module
-module load Java
-module load Python/3.10.4-GCCcore-11.3.0
+# load Nextflow module
 module load Nextflow/25.04.6
 
 # limit the RAM that can be used by nextflow

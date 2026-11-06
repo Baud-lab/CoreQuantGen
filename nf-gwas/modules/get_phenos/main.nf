@@ -1,4 +1,5 @@
 process GET_PHENOS {
+    container "tonnelene/r-simulations:1.0" // R with rhdf5
 
     tag "${phenov}"
     publishDir { h5_parent }, mode: 'copy'

@@ -1,4 +1,5 @@
 process GROUP_NULL_COVARS {
+    container "tonnelene/py_corequantgen:1.1" // only needs bash and coreutils
     
     cache false // repeat every time
     tag "trait=${meta.id}"

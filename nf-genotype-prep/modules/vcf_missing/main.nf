@@ -2,8 +2,10 @@ process VCF_MISSING {
 
     tag "${meta.id}"
     publishDir("${params.outdir}/", mode: "copy", pattern: "*.txt")
-    container "https://depot.galaxyproject.org/singularity/bcftools:1.21--h3a4d415_1" // bcftools 
-    
+    // bcftools: Galaxy Singularity image with Singularity, the same biocontainer from quay.io with Docker
+    container "${ workflow.containerEngine == 'singularity' ?
+        'https://depot.galaxyproject.org/singularity/bcftools:1.21--h3a4d415_1' :
+        'quay.io/biocontainers/bcftools:1.21--h3a4d415_1' }"
     label "time_30m"
 
     input:

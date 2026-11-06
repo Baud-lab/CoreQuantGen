@@ -3,8 +3,10 @@ process VCF_TO_PLINK {
     tag "${meta.id}"
     publishDir("${params.outdir}/", mode: "copy", pattern: "*.{bim,bed,fam,log,tsv}")
     //publishDir("${params.outdir}/host/genotypes/log", mode: "copy", pattern: "*.log")
-    container "https://depot.galaxyproject.org/singularity/plink:1.90b6.21--h7b50bb2_6" // plink 1.9
-
+    // plink 1.9: Galaxy Singularity image with Singularity, the same biocontainer from quay.io with Docker
+    container "${ workflow.containerEngine == 'singularity' ?
+        'https://depot.galaxyproject.org/singularity/plink:1.90b6.21--h7b50bb2_6' :
+        'quay.io/biocontainers/plink:1.90b6.21--h7b50bb2_6' }"
     input:
     tuple val(meta), path(vcf), path(tbi) 
     //tuple val(meta), path(vcf), path(ind_keep) // this goes with --keep below

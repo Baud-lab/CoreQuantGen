@@ -3,20 +3,19 @@ process group_pkl{
     
     cache false // so that it runs again when running failed tasks
     publishDir("${outputVD}/", mode: 'copy')
-    tag{ trait1 }
+    tag{ meta.id }
     
     input:
 	  val(suffx)
-	  tuple val(trait1), path(input_files)
+	  tuple val(meta), path(input_files)
 	  val(outputVD)
 
     output:
-    tuple val(trait1),
-    file("${trait1}_${suffx}")
+    tuple val(meta), path("${meta.id}_${suffx}")
 		
     script:
     """
     ls ${input_files} > pickles.list
-    group_pickles.py -i pickles.list -o ${trait1}_${suffx}
+    group_pickles.py -i pickles.list -o ${meta.id}_${suffx}
     """
 }

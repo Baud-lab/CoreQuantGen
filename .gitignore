@@ -1,11 +1,20 @@
 # folder related to tests
 test*/
 output/
+
 # input files
-params/ 
+**/params/*
 start_params*
+# drafts are tracked
+!**/params/*DFT.yaml
+!start_params_setDFT.csv
+
 # scripts to submit
 submit*
+# drafts are tracked
+!submit_*DFT.sh
+
+# in development
 simulations_protocol.md
 
 # folder and cache related to python runs
@@ -18,3 +27,7 @@ __pycache__/
 .nextflow/
 log/
 trace/
+work/
+
+# mac related
+.DS_Store

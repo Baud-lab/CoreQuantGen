@@ -1,6 +1,27 @@
-# How to write .h5 input to run covRunner.py
+# code/VD
+
+Python code for variance decomposition (VD) with direct and indirect genetic effects, and for GWAS mapping with LOCO null covariances.
+It is built on [limix-core](https://pypi.org/project/limix-core/) and [limix-lmm](https://pypi.org/project/limix-lmm/),
+which are installed as dependencies (see [`containers/py_corequantgen/Dockerfile`](../../containers/py_corequantgen/Dockerfile)).
+
+
+## How to run
+
+The pipelines (`nf-realdata`, `nf-simulations`, `nf-gwas`) call `covRunner.py` through symlinks in their `bin/` folders.
+To run it directly, use the `tonnelene/py_corequantgen:1.1` image or an environment with the versions pinned in its Dockerfile.
+Keep `classes/` next to `covRunner.py`: it is imported from the script's folder. 
+
+Examples are at the end of this file; see all options:
+
+```bash
+python covRunner.py --help
+```
+
+## How to write the .h5 input
 
 Will have different H5I_GROUPS (which names need to match the following ones): <br/>
+
+NB: groups that are not used in the analysis can be left out (e.g. `dam/` if there is no maternal effect), and the file can contain additional groups. <br/>
 
 ### 1. **`phenotypes/`**
 
@@ -54,7 +75,7 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
   - `['sample_ID']`
 <br/> 
 
-### 5. **`GRM/`** or **`GRM_LOCO/`**
+### 5. **`GRM/`** or **`GRMs_LOCO/`**
 5.1. subgroup: *`<GRM_subgroup>/`* (e.g. "Andres_kinship") <br/>
   
   - \<GRM_subgroup\> corresponds to 'GRM_version' <br/>
@@ -62,8 +83,9 @@ Will have different H5I_GROUPS (which names need to match the following ones): <
 
 5.2. datasets: <br/>
 
-  - `['matrix']`; 
-  - `['row_header']['sample_ID']`
+  - in `GRM/<GRM_subgroup>/`: `['matrix']`,`['row_header']`,`['sample_ID']`
+  - in `GRMs_LOCO/<GRM_subgroup>/chr<N>`: one subgroup per chromosome, `chr<N>/` (e.g. `chr1/`); <br/> each with: `['matrix']`,`['row_header']`,`['sample_ID']`<br/> NB:
+    each matrix is the GRM computed leaving out chromosome N
 <br/> 
 
 ### 6. **`sex_cov/`**
@@ -145,6 +167,7 @@ python covRunner.py \
       --phenos_v data_bcNcovariates \
       --covs_v data_bcNcovariates \
       --cage_v all \
+      --dam_v None \
       --grm_v Andres_kinship \
       --analysis_type VD \
       --out ./ \
@@ -180,12 +203,13 @@ python covRunner.py \
       --phenos_v data_bcNcovariates \
       --covs_v data_bcNcovariates \
       --cage_v all \
+      --dam_v None \
       --grm_v Andres_kinship \
       --sex_v all \
       --analysis_type VD \
       --out ./ \
       -p 1 \
       -m sex \
-      -e DGE+IGE+cageEffect  \
+      -e DGE,IGE,cageEffect  \
       -z corr_As1s2,1
 ```

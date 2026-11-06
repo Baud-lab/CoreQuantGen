@@ -62,7 +62,7 @@ keeps running after you log out and submits each task to SLURM.
    ```
 
 The Nextflow log is written to `./log/`, the execution trace is moved to `./trace/` at the end. <br/>
-If need to stop, use `scancel`, the script forwards a cancel signal to Nextflow, so that the tasks it submitted are stopped too.
+If you need to stop, use `scancel`, the script forwards a cancel signal to Nextflow, so that the tasks it submitted are stopped too.
 
 ## Outputs
 
@@ -71,6 +71,6 @@ In `<outdir>/VD/<vdMODEL>variate/<PHENOV>/<GRMV>_<SUBSET>_<EFFECTS>/`:
 - per-task estimates (`*_est.txt`) and standard errors (`*_STE.txt`), in one folder per trait; these are symlinks to the work directory
 - concatenated results (`*_all_est.txt`, `*_all_STE.txt`)
 - estimates and standard errors together in an `.Rdata` file (`*_estNste.Rdata`)
-- pickled variance decomposition objects grouped in `*_VC.pkl.gz`, they contain covariance matrices that could be used as initialisation for testing correlation constrain
+- pickled variance decomposition objects grouped in `*_VC.pkl.gz`, they contain covariance matrices that could be used as initialisation for testing correlation constraint
 
 Nextflow timeline and report go to `<outdir>/pipeline_info/`.

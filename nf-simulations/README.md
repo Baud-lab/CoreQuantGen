@@ -72,7 +72,7 @@ keeps running after you log out and submits each task to SLURM.
    ```
 
 The Nextflow log is written to `./log/`, the execution trace is moved to `./trace/` at the end. <br/>
-If need to stop, use `scancel`, the script forwards a cancel signal to Nextflow, so that the tasks it submitted are stopped too.
+If you need to stop, use `scancel`, the script forwards a cancel signal to Nextflow, so that the tasks it submitted are stopped too.
 
 ## Outputs
 

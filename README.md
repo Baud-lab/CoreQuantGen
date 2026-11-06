@@ -82,7 +82,7 @@ Each pipeline README describes its inputs, params template, outputs, and how to 
 
 ## Authors and contributions
 
-- **Hélène Tonnelé** developed the analysis and the four Nextflow pipelines, extended the VD wrappers
+- **Hélène Tonnelé** developed the analysis and the two finished pipelines (plus two in development), extended the VD wrappers
   (`covRunner.py`, `dirIndirVD.py`) with the options and the bivariate additions, and wrote `partcorrCov.py` with Francesco Paolo Casale.
 - **Amelie Baud** created the repository, the original univariate DGE/IGE code and the VD wrappers,
   and wrote the bivariate covariance classes with Francesco Paolo Casale.

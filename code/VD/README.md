@@ -19,7 +19,7 @@ python covRunner.py --help
 
 ## How to write the .h5 input
 
-Will have different H5I_GROUPS (which names need to match the following ones): <br/>
+Will have different H5I_GROUPS (whose names need to match the following ones): <br/>
 
 NB: groups that are not used in the analysis can be left out (e.g. `dam/` if there is no maternal effect), and the file can contain additional groups. <br/>
 

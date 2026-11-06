@@ -1,7 +1,7 @@
 process MAP_LOCO {
 
     tag "trait=${meta.id}"
-    container "oras://community.wave.seqera.io/library/python:3.10.20--cdca65284f2e380d" // python version 3.10
+    container "tonnelene/py_corequantgen:1.1" // python 3.10 with limix-core, limix-lmm (needed by map_LOCO_noMT.py)
     publishDir{"${params.outdir}/${meta.pval_dir}"}, mode: 'copy'
 
     label 'mem_40'

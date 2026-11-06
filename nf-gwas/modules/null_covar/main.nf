@@ -2,7 +2,7 @@ process NULL_COVAR {
     
     fair true
     tag "trait=${meta.id}, chr=${meta.chr}"
-    container "community.wave.seqera.io/library/python:3.10.20--cdca65284f2e380d" // python version 3.10
+    container "tonnelene/py_corequantgen:1.1" // python 3.10 with limix-core (needed by covRunner.py)
     publishDir{"${params.outdir}/${meta.null_dir}"} //, mode: 'copy' // they are quite heavy and easy to generate again, I wouldn't keep them, it's around 250M per folder
     
     input:

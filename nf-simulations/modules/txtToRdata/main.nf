@@ -1,17 +1,18 @@
 process txtToRdata{
-    publishDir("${outputVD}/${value_oi}/${seed_oi}/${suboutVD}", mode: 'copy')
+    publishDir("${outputVD}/${meta.value}/${meta.seed}/${suboutVD}", mode: 'copy')
     cache false // cache false so that repeat every time - this is to make sure that it is done everytime that run the analysis
     container "tonnelene/r-simulations:1.0"
+    tag{ meta.id }
     
     input:
     val(outRdata)
-    tuple val(value_oi), val(seed_oi), path(est_file), path(ste_file)
+    tuple val(meta), path(est_file), path(ste_file)
 	  val(corr_null)
 	  val(outputVD)
 	  val(suboutVD)
 
     output:
-    tuple val(value_oi), val(seed_oi), path(outRdata)
+    tuple val(meta), path(outRdata)
           
     script:
     def corr = "${corr_null}".replaceAll(/,1$/, '').replaceAll(/,0$/, '')

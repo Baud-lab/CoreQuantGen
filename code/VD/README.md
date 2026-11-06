@@ -75,7 +75,7 @@ NB: groups that are not used in the analysis can be left out (e.g. `dam/` if the
   - `['sample_ID']`
 <br/> 
 
-### 5. **`GRM/`** or **`GRM_LOCO/`**
+### 5. **`GRM/`** or **`GRMs_LOCO/`**
 5.1. subgroup: *`<GRM_subgroup>/`* (e.g. "Andres_kinship") <br/>
   
   - \<GRM_subgroup\> corresponds to 'GRM_version' <br/>
@@ -83,8 +83,9 @@ NB: groups that are not used in the analysis can be left out (e.g. `dam/` if the
 
 5.2. datasets: <br/>
 
-  - `['matrix']`; 
-  - `['row_header']['sample_ID']`
+  - in `GRM/<GRM_subgroup>/`: `['matrix']`,`['row_header']`,`['sample_ID']`
+  - in `GRMs_LOCO/<GRM_subgroup>/chr<N>`: one subgroup per chromosome, `chr<N>/` (e.g. `chr1/`); <br/> each with: `['matrix']`,`['row_header']`,`['sample_ID']`<br/> NB:
+    each matrix is the GRM computed leaving out chromosome N
 <br/> 
 
 ### 6. **`sex_cov/`**

@@ -5,7 +5,7 @@ estimating Direct and Indirect Genetic Effects.
 
 ## In brief
 An individual's phenotype (a measurable trait, e.g. body weight or the abundance of a gut bacterium)
-can be influenced by its own genes, the genes of interacting social partner(s) and other environmental effects. We call
+can be influenced by its own genes, the genes of interacting social partner(s) and other environmental effects. We call:
 
 - **DGE, direct genetic effects:** the effects of an individual's own genotype on its own phenotype.
 - **IGE, indirect genetic effects:** the effects of the social partners' (cage mates') genotypes on the phenotype of another individual.
@@ -16,13 +16,13 @@ can be influenced by its own genes, the genes of interacting social partner(s) a
 
 ## What can you do
 
-**Variance Decomposition (VD):** estimating how much of the variation in a trait is explained by each of the variance components above. It can be run in three mode:
+**Variance Decomposition (VD):** estimating how much of the variation in a trait is explained by each of the variance components above. It can be run in three modes:
 
 | Mode | Input | Purpose |
 |---|---|---|
 | univariate (`uni`) | one phenotype at a time | estimate how much a phenotype is affected by IGE |
 | bivariate (`bi`) | a pair of phenotypes | estimate the correlation between IGE and DGE, to identify proxy phenotypes that mediate IGE |
-| sex-variate (`sex`) | one phenotype split into females and males | estimate the correlation between female and male IGE, to identify phenotypes for the mechanism mediating IGE is different in females and males |
+| sex-variate (`sex`) | one phenotype split into females and males | estimate the correlation between female and male IGE, to identify phenotypes for which the mechanism mediating IGE is different in females and males |
 
 **Genome Wide Association Study (GWAS)**: to identify genetic variants that are statistically associated with complex trait of the own individual (dge-GWAS) or with the trait of the cage mate and could possibly point to genes involved in the mediation of IGE (ige-GWAS). It runs in univariate mode only.
 
@@ -92,7 +92,7 @@ Each pipeline README describes its inputs, params template, outputs, and how to 
 
 ## Status and limitations
 
-- The pipelines follow some nf-core conventions (one module per folder, a container for every module, labels for resources, separate profiles for container engine and infrastructure) but were not built from the nf-core template and are not linted.
+- The pipelines follow some nf-core conventions (one module per folder, meta maps, a container for every module, labels for resources, separate profiles for container engine and infrastructure) but were not built from the nf-core template and are not linted.
 - `nf-realdata` and `nf-simulations` have a `test` profile with a small dataset.
 - The R packages in `containers/r-simulations/Dockerfile` are not version-pinned, so a rebuild may install newer versions than the published `tonnelene/r-simulations:1.0` image.
 

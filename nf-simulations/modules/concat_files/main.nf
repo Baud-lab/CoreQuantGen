@@ -1,4 +1,5 @@
 process concat_files{
+    container "tonnelene/py_corequantgen:1.1" // only needs bash and coreutils; same image as run_VD
     publishDir("${outputVD}/${value_oi}/${seed_oi}/${suboutVD}", mode: 'copy')
     cache false // cache false so that repeat every time - this is to make sure that it is done everytime that run the analysis
     

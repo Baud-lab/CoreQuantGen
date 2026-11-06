@@ -1,4 +1,5 @@
 process create_combin{
+  container "tonnelene/py_corequantgen:1.1" // only needs bash; same image as run_VD
   //publishDir("$outputSim/${value_oi}/", mode: 'copy')
   
   input:

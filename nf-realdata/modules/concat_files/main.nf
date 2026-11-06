@@ -1,4 +1,5 @@
 process concat_files{
+  container "tonnelene/py_corequantgen:1.1" // only needs bash and coreutils; same image as run_VD
   
   cache false // so that it runs again when running failed tasks
   publishDir("$outputVD/", mode: 'copy') 

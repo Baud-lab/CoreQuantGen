@@ -16,9 +16,7 @@ can be influenced by its own genes, the genes of interacting social partner(s) a
 
 ## What can you do
 
-**Variance Decomposition (VD):** estimating how much of the variation in a trait is explained by each of the variance components above.
-
-It can be run in three mode:
+**Variance Decomposition (VD):** estimating how much of the variation in a trait is explained by each of the variance components above. It can be run in three mode:
 
 | Mode | Input | Purpose |
 |---|---|---|
@@ -26,7 +24,7 @@ It can be run in three mode:
 | bivariate (`bi`) | a pair of phenotypes | estimate the correlation between IGE and DGE, to identify proxy phenotypes that mediate IGE |
 | sex-variate (`sex`) | one phenotype split into females and males | estimate the correlation between female and male IGE, to identify phenotypes for the mechanism mediating IGE is different in females and males |
 
-**GWAS**: to identify genetic variants that are statistically associated with complex trait of the own individual (dge-GWAS) or with the trait of the cage mate and could possibly point to genes involved in the mediation of IGE (ige-GWAS). It runs in univariate mode only.
+**Genome Wida Association Study (GWAS)**: to identify genetic variants that are statistically associated with complex trait of the own individual (dge-GWAS) or with the trait of the cage mate and could possibly point to genes involved in the mediation of IGE (ige-GWAS). It runs in univariate mode only.
 
 ## Repo map
 

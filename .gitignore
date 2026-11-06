@@ -18,3 +18,5 @@ __pycache__/
 .nextflow/
 log/
 trace/
+
+.DS_Store

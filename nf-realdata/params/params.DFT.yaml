@@ -1,0 +1,25 @@
+###### INPUT FILES
+input:      ""  # path to input .h5 file (structure in code/VD/README.md)
+combinDir:  ""  # bivariate only: folder with combins_<phenos>*.csv files (pairs of phenotypes, one pair per line); not used in uni/sex
+phenos:     ""  # uni/sex: number of phenotypes to analyse (one VD task per phenotype)
+                # bi: string selecting the combins files in combinDir (combins_<phenos>*.csv), leave empty for all
+
+###### OUTPUT FOLDER
+outdir:     "./output"  # where results are published
+#pipeline_info:         # optional: folder for pipeline info (timeline, report); default is <outdir>/pipeline_info
+
+###### PARAMS FOR ANALYSIS - names of the subgroups in the .h5 (in R: rhdf5::h5ls(input))
+vdMODEL:    "uni"    # model: "uni", "bi" or "sex"
+PHENOV:     ""       # phenotypes/<PHENOV>
+COVSV:      "None"   # covariates/<COVSV>, "None" if no covariates
+CAGEV:      ""       # cages/<CAGEV>
+DAMV:       "None"   # dam/<DAMV>, needed for maternalEffect, "None" otherwise
+GRMV:       ""       # GRM/<GRMV>
+SEXV:       "None"   # sex_cov/<SEXV>, needed for vdMODEL "sex", "None" otherwise
+SUBSET:     "None"   # subsets/<SUBSET> to analyse only a subset of individuals, "None" for all
+EFFECTS:    "DGE,IGE,cageEffect"  # any of DGE,IGE,IEE,cageEffect,maternalEffect (NB: IEE is included by default if IGE)
+CORR_NULL:  "None"   # bivariate/sex only: correlation to constrain to 0 or 1, e.g. "corr_Ad1s2,0" or "corr_As1s2,1"
+bitime:     "2.h"    # time per bivariate task; depends on dataset size and effects in the model
+
+###### PARAMS FOR COLLECTING FILES
+SWAPtraits: "FALSE"  # "TRUE" to swap trait1 and trait2 in the collected results

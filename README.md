@@ -24,7 +24,7 @@ can be influenced by its own genes, the genes of interacting social partner(s) a
 | bivariate (`bi`) | a pair of phenotypes | estimate the correlation between IGE and DGE, to identify proxy phenotypes that mediate IGE |
 | sex-variate (`sex`) | one phenotype split into females and males | estimate the correlation between female and male IGE, to identify phenotypes for the mechanism mediating IGE is different in females and males |
 
-**Genome Wida Association Study (GWAS)**: to identify genetic variants that are statistically associated with complex trait of the own individual (dge-GWAS) or with the trait of the cage mate and could possibly point to genes involved in the mediation of IGE (ige-GWAS). It runs in univariate mode only.
+**Genome Wide Association Study (GWAS)**: to identify genetic variants that are statistically associated with complex trait of the own individual (dge-GWAS) or with the trait of the cage mate and could possibly point to genes involved in the mediation of IGE (ige-GWAS). It runs in univariate mode only.
 
 ## Repo map
 
@@ -37,6 +37,7 @@ can be influenced by its own genes, the genes of interacting social partner(s) a
 | [`nf-gwas/`](nf-gwas) | Nextflow pipeline: GWAS with leave-one-chromosome-out (LOCO) null covariances | under development |
 | [`code/`](code) | analysis scripts, most of them called by the pipelines: VD and GWAS mapping, input preparation, output parsing; see [its README](code/README.md) | |
 | [`containers/`](containers) | Dockerfiles for the two images built for this repo | |
+| [`data/`](data) | small test dataset (`test.h5`: 200 individuals, 5 phenotypes) used by the `test` profiles | |
 
 **NB: Scripts in `bin/` are symlinks.** Each pipeline's `bin/` folder links to scripts in `code/`
 (e.g. `nf-realdata/bin/covRunner.py -> ../../code/VD/covRunner.py`), because the same scripts are shared
@@ -45,16 +46,14 @@ software dependencies but not the analysis scripts. Clone the whole repo, not a 
 
 ## Quick start
 
-<!-- TODO: verify — commands below are taken from the submit scripts in the repo and have not been confirmed yet -->
-
 **Requirements**
 
-- Nextflow 25.04.6.
+- Nextflow (the pipelines are run with 25.04.6).
 - Singularity/Apptainer or Docker.
-- An input `.h5` file, structured as described in [`code/VD/README.md`](code/VD/README.md#how-to-write-the-h5-input). 
-<!-- TODO: verify — add example dataset in the repo -->
+- An input `.h5` file, structured as described in [`code/VD/README.md`](code/VD/README.md#how-to-write-the-h5-input).
+  A small test dataset is in [`data/test.h5`](data).
 
-**Profiles** (combine one container engine with one infrastructure):
+**Profiles**: combine one container engine with one infrastructure, plus `test` to run on the test dataset.
 
 | Profile | Sets |
 |---|---|
@@ -62,87 +61,24 @@ software dependencies but not the analysis scripts. Clone the whole repo, not a 
 | `docker` | Docker |
 | `crg` | SLURM at the CRG cluster (queue and QOS) |
 | `local` | local executor, resources capped at 16 GB / 4 CPUs / 24 h |
+| `test` | input and parameters for the test dataset in `data/test.h5` |
 
-**nf-realdata**
+**Test run**, from the pipeline folder:
 
-<!-- TODO: verify - if works with your small .h5-->
 ```bash
 cd nf-realdata
-nextflow run main.nf -profile singularity,crg -params-file <params.yaml> -resume
-```
-<!-- TODO: verify - add the template params file-->
-Template: ...
-
-```mermaid
-flowchart LR
-  h5[("input .h5<br/>phenotypes, covariates, GRM,<br/>cages, dam, sex, subsets")]
-  comb["combins_*.csv<br/>phenotype pairs<br/>(bivariate only)"]
-  VD["run_VD<br/>covRunner.py<br/>one task per phenotype or pair"]
-  CAT["concat_est / concat_STE"]
-  RD["txtToRdata"]
-  PKL["group_pkl"]
-  o2[/"*_estNste.Rdata"/]
-  o3[/"*_VC.pkl.gz"/]
-  h5 --> VD
-  comb -.-> VD
-  VD -- "*_est.txt, *_STE.txt" --> CAT
-  CAT -- "*_all_est.txt, *_all_STE.txt" --> RD --> o2
-  VD -- "*_VC.pkl.gz per task" --> PKL --> o3
+nextflow run main.nf -profile test,docker,local
 ```
 
-Outputs: in `<outdir>/VD/<vdMODEL>variate/<PHENOV>/<GRMV>_<SUBSET>_<EFFECTS>/`:
-- per-task estimates (`*_est.txt`) and standard errors (`*_STE.txt`)
-- concatenated results (`all_est.txt`, `all_STE.txt`),
-- `.Rdata` file with estimates and standard errors together (`estNste.Rdata`),
-- pickled VD objects grouped in `VC.pkl.gz`. <br/>
+**Run on your data** with a params file, e.g. at CRG:
 
-Nextflow timeline and report go to `<outdir>/pipeline_info/`.
-
-**nf-simulations**
-
-<!-- TODO: verify - test on small .h5 -->
 ```bash
-cd nf-simulations
-nextflow run main.nf -profile singularity,crg -params-file <params.yaml> -resume
+cd nf-realdata
+nextflow run main.nf -profile singularity,crg -params-file params/params.<POP>_<model>.yaml -resume
 ```
 
-Templates: [`params/params.simDFT.yaml`](nf-simulations/params/params.simDFT.yaml) (params file, with comments) and
-[`input/vc/start_params_setDFT.csv`](nf-simulations/input/vc/start_params_setDFT.csv) (starting variance components). <br/>
-The pipeline simulates phenotypes from the GRM, cages and (optionally) dams of an existing `.h5`, then runs the same VD steps as `nf-realdata`.
-With `skip_simulations: true` it runs VD only, on an already simulated `.h5`.
-
-```mermaid
-flowchart LR
-  sp[("start_params_*.csv<br/>starting variance components")]
-  h5[("original .h5<br/>GRM, cages, dam, sex")]
-  SP["starting_pars<br/>sets parameter P to each value V"]
-  SIM["run_simulations<br/>run_simulations.R<br/>one task per value x seed"]
-  SIMP["simP_fromH5"]
-  CC["create_combin<br/>(bivariate only)"]
-  skip["sim_h5 + combin<br/>(skip_simulations: true)"]
-  VD["run_VD -> concat -> txtToRdata, group_pkl<br/>same steps as nf-realdata"]
-  simh5[/"simulated .h5"/]
-  o0[/"params_*.txt<br/>simulated parameters"/]
-  o1[/"*_estNste.Rdata<br/>*_VC.pkl.gz"/]
-  sp --> SP --> SIM
-  h5 --> SIM
-  SIM --> simh5
-  simh5 --> SIMP --> o0
-  simh5 --> VD
-  CC -.-> VD
-  skip -.-> VD
-  VD --> o1
-```
-
-Outputs: 
-- simulations in `<output_folder>/mockphenos/cage_<NCAGES>/set<SIT>/<P>/<value>/<seed>/`,
-- VD results in `<output_folder>/VD/cage_<NCAGES>/set<SIT>/<P>/<value>/<seed>/<vdMODEL>variate/<PHENOV>/`.
-
-Nextflow timeline and report go to `<outdir>/pipeline_info/`.
-
-
-**At CRG**, `nf-realdata/submit_DFT.sh` and `nf-simulations/submit_simPOP_DFT.sh` wrap the commands above for SLURM;
-edit the lines marked `EDIT HERE` before running them with `sbatch`.
+Each pipeline README describes its inputs, params template, outputs, and how to submit the run as a SLURM job with `sbatch`:
+[`nf-realdata/README.md`](nf-realdata/README.md) and [`nf-simulations/README.md`](nf-simulations/README.md).
 
 ## Authors and contributions
 
@@ -156,8 +92,8 @@ edit the lines marked `EDIT HERE` before running them with `sbatch`.
 
 ## Status and limitations
 
-- The pipelines follow some nf-core conventions (one module per folder, labels for resources, separate profiles for container engine and infrastructure)
-  but were not built from the nf-core template and are not linted (no nf-test, no test profile, parameters are not validated)
+- The pipelines follow some nf-core conventions (one module per folder, a container for every module, labels for resources, separate profiles for container engine and infrastructure) but were not built from the nf-core template and are not linted.
+- `nf-realdata` and `nf-simulations` have a `test` profile with a small dataset.
 - The R packages in `containers/r-simulations/Dockerfile` are not version-pinned, so a rebuild may install newer versions than the published `tonnelene/r-simulations:1.0` image.
 
 ## Citation

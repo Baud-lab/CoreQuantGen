@@ -2,10 +2,15 @@
 test*/
 output/
 # input files
-params/ 
+**/params/*
 start_params*
 # scripts to submit
 submit*
+# track templates (*DFT.*) 
+!**/params/*DFT.yaml
+!**/submit*DTF.sh
+
+# in development
 simulations_protocol.md
 
 # folder and cache related to python runs
